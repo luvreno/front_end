@@ -466,3 +466,7 @@ section[id], [data-section] { scroll-margin-top: calc(var(--nav-h) + 12px); }
   color: var(--c4);
 }
 .page-top { padding-top: calc(var(--space-5) + 1rem); }
+.on-green .btn-primary { --btn-bg: var(--c1); --btn-fg: var(--c4); --btn-bd: var(--c1); }
+@media (hover: hover) and (pointer: fine) {
+  .on-green .btn-primary:hover { --btn-bg: var(--c4); --btn-fg: var(--c1); --btn-bd: var(--c4); }
+}
