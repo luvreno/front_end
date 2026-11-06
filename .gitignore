@@ -1,0 +1,14 @@
+node_modules/
+dist/
+.env
+.env.local
+secrets.txt
+api/config.php
+public/api/config.php
+api/data/*
+public/api/data/*
+!public/api/data/.htaccess
+test-results/
+playwright-report/
+*.log
+.DS_Store
