@@ -57,6 +57,20 @@ if (/checkout|404/.test(sitemap)) errors.push('sitemap contains a noindex URL');
 const robots = exists('robots.txt') ? fs.readFileSync(path.join(dist, 'robots.txt'), 'utf8') : '';
 for (const line of ['Disallow: /api/', 'Disallow: /checkout/', 'Sitemap: https://']) if (!robots.includes(line)) errors.push(`robots.txt missing "${line}"`);
 
+// CSP in .htaccess must allow the exact inline script shipped in the HTML
+if (exists('.htaccess') && exists('index.html')) {
+  const { createHash } = await import('node:crypto');
+  const idx = fs.readFileSync(path.join(dist, 'index.html'), 'utf8');
+  const ht = fs.readFileSync(path.join(dist, '.htaccess'), 'utf8');
+  for (const m of idx.matchAll(/<script>([\s\S]*?)<\/script>/g)) {
+    const h = `sha256-${createHash('sha256').update(m[1]).digest('base64')}`;
+    if (!ht.includes(h)) errors.push(`.htaccess CSP is missing '${h}' for an inline script in index.html`);
+  }
+  for (const part of ['RewriteCond %{HTTP:X-Forwarded-Proto}', 'ErrorDocument 404 /404.html', 'Strict-Transport-Security']) {
+    if (!ht.includes(part)) errors.push(`.htaccess missing ${part}`);
+  }
+}
+
 for (const w of warn) console.warn(`check-dist warning: ${w}`);
 if (errors.length) {
   console.error('check-dist FAILED:\n  ' + errors.join('\n  '));
