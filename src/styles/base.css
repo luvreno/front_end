@@ -33,7 +33,7 @@
   --fs-3: clamp(1.5rem, 1.3rem + 0.9vw, 2rem);                /* 24px+ large text */
   --fs-4: clamp(2rem, 1.5rem + 2.2vw, 3.25rem);
   --fs-5: clamp(2.5rem, 1.6rem + 4vw, 4.75rem);
-  --fs-6: clamp(2.75rem, 1.5rem + 5.6vw, 6.25rem);
+  --fs-6: clamp(2.6rem, 1.5rem + 4.4vw, 5.25rem);
   --lh-body: 1.6;
   --lh-tight: 1.05;
 
