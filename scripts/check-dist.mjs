@@ -18,6 +18,7 @@ const required = [
 for (const f of required) if (!exists(f)) errors.push(`missing dist/${f}`);
 if (fs.existsSync(path.join(dist, 'api', 'config.php'))) warn.push('dist/api/config.php exists (contains secrets): make sure you mean to upload it');
 
+const decode = (v) => v.replace(/&quot;/g, '"').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&#39;/g, "'").replace(/&amp;/g, '&');
 const walk = (dir) => fs.readdirSync(dir, { withFileTypes: true }).flatMap((d) => (d.isDirectory() ? walk(path.join(dir, d.name)) : [path.join(dir, d.name)]));
 const htmlFiles = walk(dist).filter((f) => f.endsWith('.html'));
 const sitemap = exists('sitemap.xml') ? fs.readFileSync(path.join(dist, 'sitemap.xml'), 'utf8') : '';
@@ -31,9 +32,9 @@ for (const file of htmlFiles) {
   const canon = [...head.matchAll(/<link rel="canonical" href="([^"]*)"/g)];
   const noindex = /<meta name="robots" content="noindex/.test(head);
   if (titles.length !== 1) errors.push(`${rel}: ${titles.length} <title> tags`);
-  else if (titles[0][1].length > 60) errors.push(`${rel}: title over 60 characters (${titles[0][1].length})`);
+  else if (decode(titles[0][1]).length > 60) errors.push(`${rel}: title over 60 characters (${titles[0][1].length})`);
   if (descs.length !== 1) errors.push(`${rel}: ${descs.length} meta descriptions`);
-  else if (descs[0][1].length > 160) errors.push(`${rel}: description over 160 characters`);
+  else if (decode(descs[0][1]).length > 160) errors.push(`${rel}: description over 160 characters`);
   if (!noindex) {
     if (canon.length !== 1) errors.push(`${rel}: expected exactly one canonical, found ${canon.length}`);
     else {

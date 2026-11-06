@@ -25,8 +25,32 @@ export default meta;`, map: null };
   };
 }
 
+/** Local dev/preview only: stand-in for the PHP endpoints, which run only on the real server. */
+function localApiStub(): Plugin {
+  const handler = (req: import('http').IncomingMessage, res: import('http').ServerResponse, next: () => void) => {
+    const url = req.url || '';
+    if (!url.startsWith('/api/')) return next();
+    res.setHeader('Content-Type', 'application/json');
+    if (url.startsWith('/api/testimonials.php') && req.method === 'GET') {
+      res.end(JSON.stringify({ ok: true, items: [] }));
+      return;
+    }
+    res.statusCode = 503;
+    res.end(JSON.stringify({ ok: false, error: 'PHP endpoints only run on the live server.' }));
+  };
+  return {
+    name: 'luvreno-local-api-stub',
+    configureServer(server) {
+      server.middlewares.use(handler);
+    },
+    configurePreviewServer(server) {
+      server.middlewares.use(handler);
+    },
+  };
+}
+
 export default defineConfig({
-  plugins: [markdownPosts(), react()],
+  plugins: [markdownPosts(), react(), localApiStub()],
   define: { __BUILD_DATE__: JSON.stringify(new Date().toISOString().slice(0, 10)) },
   build: {
     target: ['es2020', 'safari15'],

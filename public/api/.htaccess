@@ -1,0 +1,20 @@
+# Luvreno API: block secrets and helpers from direct access
+Options -Indexes
+
+<IfModule mod_authz_core.c>
+  <FilesMatch "^(config.*\.php|lib\.php|.*\.json|.*\.lock|.*\.tmp)$">
+    Require all denied
+  </FilesMatch>
+  # the example config is harmless but still not meant to be served
+</IfModule>
+<IfModule !mod_authz_core.c>
+  <FilesMatch "^(config.*\.php|lib\.php|.*\.json|.*\.lock|.*\.tmp)$">
+    Order allow,deny
+    Deny from all
+  </FilesMatch>
+</IfModule>
+
+<IfModule mod_headers.c>
+  Header always set X-Robots-Tag "noindex, nofollow"
+  Header always set Cache-Control "no-store"
+</IfModule>
