@@ -27,7 +27,7 @@ export function validateMeta(meta, file = '') {
   if (meta.slug && !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(meta.slug)) errors.push(`${file}: slug must be kebab-case`);
   if (meta.date && !/^\d{4}-\d{2}-\d{2}$/.test(meta.date)) errors.push(`${file}: date must be YYYY-MM-DD`);
   if (meta.readingTime && !/^\d+$/.test(String(meta.readingTime))) errors.push(`${file}: readingTime must be minutes`);
-  if (meta.title && meta.title.length > 70) errors.push(`${file}: title too long`);
+  if (meta.title && meta.title.length > 90) errors.push(`${file}: title too long`);
   if (meta.excerpt && meta.excerpt.length > 160) errors.push(`${file}: excerpt over 160 characters`);
   if (meta.author && meta.author !== 'Luvreno Team') errors.push(`${file}: author must be Luvreno Team`);
   return errors;

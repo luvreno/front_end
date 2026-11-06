@@ -8,12 +8,15 @@ function markdownPosts(): Plugin {
     name: 'luvreno-markdown',
     enforce: 'pre',
     transform(src, id) {
-      if (!id.endsWith('.md')) return null;
+      const [file, query] = id.split('?');
+      if (!file.endsWith('.md')) return null;
       const { meta, body } = parseFrontMatter(src);
       const errors = validateMeta(meta, id);
       if (errors.length) this.error(errors.join('\n'));
-      const { html, headings } = renderMarkdown(body);
       const m = { ...meta, readingTime: Number(meta.readingTime) };
+      if (query === 'meta') return { code: `export const meta = ${JSON.stringify(m)};
+export default meta;`, map: null };
+      const { html, headings } = renderMarkdown(body);
       return {
         code: `export const meta = ${JSON.stringify(m)};\nexport const html = ${JSON.stringify(html)};\nexport const headings = ${JSON.stringify(headings)};\nexport default { meta, html, headings };`,
         map: null,

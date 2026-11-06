@@ -16,26 +16,16 @@ export interface PostBody {
   headings: { id: string; text: string; level: number }[];
 }
 
-const metas = import.meta.glob<PostMeta>('../content/blog/*.md', { eager: true, import: 'meta' });
-const bodies = import.meta.glob<PostBody>('../content/blog/*.md', { import: 'default' });
+const metas = import.meta.glob<PostMeta>('../content/blog/*.md', { eager: true, query: '?meta', import: 'meta' });
 
-const pathBySlug = new Map<string, string>();
 export const posts: PostMeta[] = Object.entries(metas)
-  .map(([path, m]) => {
-    pathBySlug.set(m.slug, path);
-    return m;
-  })
+  .map(([, m]) => m)
   .sort((a, b) => (a.date < b.date ? 1 : a.date > b.date ? -1 : a.title.localeCompare(b.title)));
 
 export const categories = Array.from(new Set(posts.map((p) => p.category))).sort();
 
 export const getPost = (slug: string) => posts.find((p) => p.slug === slug);
 
-export async function loadPostBody(slug: string): Promise<PostBody | null> {
-  const path = pathBySlug.get(slug);
-  if (!path) return null;
-  return bodies[path]();
-}
 
 export function filterPosts(list: PostMeta[], category: string | null, query: string): PostMeta[] {
   const q = query.trim().toLowerCase();
