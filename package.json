@@ -8,7 +8,7 @@
     "icons": "node scripts/gen-icons.mjs",
     "build": "node scripts/gen-icons.mjs && tsc -b && vite build && node scripts/postbuild.mjs && node scripts/check-prices.mjs && node scripts/check-dist.mjs",
     "preview": "vite preview --port 4173 --strictPort",
-    "typecheck": "tsc -b --noEmit",
+    "typecheck": "tsc -b",
     "lint": "eslint . --max-warnings=0",
     "test": "vitest run",
     "check:dashes": "node scripts/check-dashes.mjs",
@@ -19,8 +19,10 @@
     "check:external": "node scripts/check-external.mjs",
     "check:php": "node scripts/check-php.mjs",
     "check:secrets": "node scripts/check-secrets.mjs",
-    "check": "npm run typecheck && npm run lint && npm run check:dashes && npm run check:placeholders && npm run check:contrast && npm run test && npm run build && npm run check:links && npm run check:prices && npm run check:php",
-    "e2e": "playwright test"
+    "check": "npm run typecheck && npm run lint && npm run check:dashes && npm run check:placeholders && npm run test && npm run build && npm run check:links && npm run check:contrast && npm run check:php && npm run check:dashes",
+    "e2e": "npm run build && npm run build:e2e && node scripts/e2e.mjs",
+    "build:e2e": "vite build --mode e2e --outDir dist-e2e",
+    "e2e:run": "node scripts/e2e.mjs"
   },
   "dependencies": {
     "@fontsource/figtree": "^5.3.0",

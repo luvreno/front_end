@@ -260,7 +260,7 @@ export const faqs: Faq[] = [
   {
     q: 'What is Luvreno?',
     a: 'Luvreno is a customer and product management application for retail and e-commerce teams. It keeps customer profiles, your product catalog, segments and recommendation rules in one workspace, and reports on how recommendations perform.',
-    keywords: ['what is', 'luvreno', 'about', 'platform', 'do', 'does it do', 'explain'],
+    keywords: ['what is luvreno', 'luvreno', 'about luvreno', 'platform', 'what does it do', 'overview'],
   },
   {
     q: 'How are recommendations produced?',

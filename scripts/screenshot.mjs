@@ -3,7 +3,7 @@
 import { chromium } from '@playwright/test';
 
 const [, , p = '/', w = '1280', out = 'shot.png', ...flags] = process.argv;
-const base = process.env.BASE_URL || 'http://localhost:4173';
+const base = process.env.BASE_URL || 'http://localhost:4280';
 const browser = await chromium.launch();
 const page = await browser.newPage({ viewport: { width: Number(w), height: 900 } });
 const logs = [];

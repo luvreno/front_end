@@ -12,7 +12,9 @@ function loadScript(): Promise<void> {
     loader = new Promise<void>((resolve, reject) => {
       window.__lvRecaptchaReady = () => resolve();
       const s = document.createElement('script');
-      s.src = 'https://www.google.com/recaptcha/api.js?onload=__lvRecaptchaReady&render=explicit&hl=en';
+      // VITE_RECAPTCHA_SCRIPT_URL is set only by .env.e2e (a local stand-in); production loads Google's script
+      const base = (import.meta.env.VITE_RECAPTCHA_SCRIPT_URL || '').trim() || 'https://www.google.com/recaptcha/api.js';
+      s.src = `${base}?onload=__lvRecaptchaReady&render=explicit&hl=en`;
       s.async = true;
       s.defer = true;
       s.onerror = () => {
@@ -43,7 +45,7 @@ export function useRecaptcha(box: RefObject<HTMLDivElement | null>, trigger: Ref
         .then(() => {
           const el = box.current;
           if (cancelled || !el || !window.grecaptcha || widget.current !== null) return;
-          el.innerHTML = '';
+          // the mount node is owned by reCAPTCHA only: React never renders children into it
           const holder = document.createElement('div');
           el.appendChild(holder);
           widget.current = window.grecaptcha.render(holder, {
@@ -66,10 +68,13 @@ export function useRecaptcha(box: RefObject<HTMLDivElement | null>, trigger: Ref
       { rootMargin: '400px 0px' },
     );
     io.observe(trigger.current);
+    const mount = box.current;
     return () => {
       cancelled = true;
       io.disconnect();
       widget.current = null;
+      // safe: this node never has React-managed children
+      mount?.replaceChildren();
     };
   }, [box, trigger]);
 

@@ -4,6 +4,8 @@ interface ImportMetaEnv {
   readonly VITE_SITE_URL?: string;
   readonly VITE_DASHBOARD_URL?: string;
   readonly VITE_RECAPTCHA_SITE_KEY?: string;
+  /** e2e only: local reCAPTCHA stand-in. Leave unset in production. */
+  readonly VITE_RECAPTCHA_SCRIPT_URL?: string;
   readonly VITE_CHAT_PROVIDER?: string;
   readonly VITE_STRIPE_LINK_STARTER?: string;
   readonly VITE_STRIPE_LINK_GROWTH?: string;

@@ -43,16 +43,13 @@ export function useFocusTrap(ref: RefObject<HTMLElement | null>, active: boolean
         root.focus();
         return;
       }
-      const first = items[0];
-      const last = items[items.length - 1];
+      // Move focus ourselves on every Tab: browsers differ in what Tab visits
+      // (Safari skips links by default), so native order cannot be trusted inside a trap.
+      e.preventDefault();
       const cur = document.activeElement as HTMLElement | null;
-      if (e.shiftKey && (cur === first || !root.contains(cur))) {
-        e.preventDefault();
-        last.focus();
-      } else if (!e.shiftKey && (cur === last || !root.contains(cur))) {
-        e.preventDefault();
-        first.focus();
-      }
+      const i = cur ? items.indexOf(cur) : -1;
+      const next = e.shiftKey ? (i <= 0 ? items.length - 1 : i - 1) : i === -1 || i === items.length - 1 ? 0 : i + 1;
+      items[next].focus();
     };
     document.addEventListener('keydown', onKey, true);
     return () => {

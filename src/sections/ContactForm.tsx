@@ -145,7 +145,8 @@ export function ContactForm() {
 
       {recaptchaConfigured ? (
         <div className="captcha">
-          <div ref={boxRef} className="captcha-box" data-testid="recaptcha-box">
+          <div className="captcha-box" data-testid="recaptcha-box">
+            <div ref={boxRef} className="captcha-mount" />
             {capStatus !== 'ready' && <span className="field-hint">{capStatus === 'error' ? 'reCAPTCHA could not load. Please check your connection and reload.' : 'Loading reCAPTCHA'}</span>}
           </div>
           {captchaErr && <p className="field-error" role="alert">{captchaErr}</p>}

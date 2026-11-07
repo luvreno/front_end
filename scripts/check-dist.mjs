@@ -57,6 +57,11 @@ if (/checkout|404/.test(sitemap)) errors.push('sitemap contains a noindex URL');
 const robots = exists('robots.txt') ? fs.readFileSync(path.join(dist, 'robots.txt'), 'utf8') : '';
 for (const line of ['Disallow: /api/', 'Disallow: /checkout/', 'Sitemap: https://']) if (!robots.includes(line)) errors.push(`robots.txt missing "${line}"`);
 
+// The e2e reCAPTCHA stand-in must never reach the production build
+for (const f of walk(path.join(dist, 'assets')).filter((x) => x.endsWith('.js'))) {
+  if (fs.readFileSync(f, 'utf8').includes('/__e2e/')) errors.push(`${path.basename(f)} references the e2e test stub (/__e2e/): VITE_RECAPTCHA_SCRIPT_URL must be unset for production`);
+}
+
 // CSP in .htaccess must allow the exact inline script shipped in the HTML
 if (exists('.htaccess') && exists('index.html')) {
   const { createHash } = await import('node:crypto');

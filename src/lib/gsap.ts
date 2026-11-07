@@ -9,15 +9,74 @@ export function loadGsap(): Promise<GsapModule> {
   if (!promise) {
     promise = import('./gsapCore').then((m) => {
       loaded = m;
+      installGuard(m);
       return m;
     });
   }
   return promise;
 }
 
-/** Refresh ScrollTrigger positions if GSAP has been loaded. */
+/**
+ * Refresh ScrollTrigger positions if GSAP has been loaded, without letting it
+ * restore a scroll position it cached earlier (that would undo ScrollManager).
+ */
 export function refreshScrollTriggers() {
-  loaded?.ScrollTrigger.refresh();
+  if (!loaded) return;
+  const y = window.scrollY;
+  loaded.ScrollTrigger.clearScrollMemory('manual');
+  loaded.ScrollTrigger.refresh();
+  if (Math.abs(window.scrollY - y) > 1) {
+    const root = document.documentElement;
+    const prev = root.style.scrollBehavior;
+    root.style.scrollBehavior = 'auto';
+    window.scrollTo(0, y);
+    root.style.scrollBehavior = prev;
+  }
+}
+
+/** Forget any scroll positions ScrollTrigger remembered for the previous page. */
+export function clearScrollMemory() {
+  loaded?.ScrollTrigger.clearScrollMemory('manual');
+}
+
+/*
+ * Navigation guard. ScrollTrigger caches the scroll position between ticks; if it auto-refreshes
+ * right after ScrollManager jumps (before it has seen the scroll event), it "restores" the stale
+ * value. For a short window after each navigation we re-apply the position ScrollManager chose.
+ */
+let intended: { y: number; until: number } | null = null;
+let guardInstalled = false;
+
+function installGuard(m: GsapModule) {
+  if (guardInstalled) return;
+  guardInstalled = true;
+  m.ScrollTrigger.addEventListener('refresh', () => {
+    if (!intended || performance.now() > intended.until) return;
+    if (Math.abs(window.scrollY - intended.y) > 2) {
+      const root = document.documentElement;
+      const prev = root.style.scrollBehavior;
+      root.style.scrollBehavior = 'auto';
+      window.scrollTo(0, intended.y);
+      root.style.scrollBehavior = prev;
+      m.ScrollTrigger.update();
+    }
+  });
+}
+
+/** Called by ScrollManager after it sets the scroll position for a navigation. */
+export function settleScroll(y: number) {
+  intended = { y, until: performance.now() + 3000 };
+  if (loaded) {
+    installGuard(loaded);
+    loaded.ScrollTrigger.update();
+  } else {
+    promise?.then(installGuard).catch(() => undefined);
+  }
+}
+
+/** Cancels the guard as soon as the visitor scrolls on purpose. */
+export function releaseScroll() {
+  intended = null;
 }
 
 type Setup = (m: GsapModule) => void;

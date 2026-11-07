@@ -238,7 +238,8 @@ function FeedbackForm() {
       </div>
       {recaptchaConfigured ? (
         <div className="captcha">
-          <div ref={boxRef} className="captcha-box">
+          <div className="captcha-box">
+            <div ref={boxRef} className="captcha-mount" />
             {capStatus !== 'ready' && <span className="field-hint">{capStatus === 'error' ? 'reCAPTCHA could not load. Please reload the page.' : 'Loading reCAPTCHA'}</span>}
           </div>
           {capErr && <p className="field-error" role="alert">{capErr}</p>}

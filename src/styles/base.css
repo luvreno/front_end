@@ -62,6 +62,7 @@
 *, *::before, *::after { box-sizing: border-box; }
 
 html {
+  overflow-anchor: none; /* ScrollManager owns scroll position across route changes */
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
   scroll-behavior: smooth;
@@ -317,6 +318,7 @@ section[id], [data-section] { scroll-margin-top: calc(var(--nav-h) + 12px); }
 
 /* ------------------------------------------------------- stitch and thread */
 .stitch-divider {
+  color: var(--c3);
   display: block;
   height: 0;
   border: 0;

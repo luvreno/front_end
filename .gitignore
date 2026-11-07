@@ -13,3 +13,4 @@ playwright-report/
 *.log
 .DS_Store
 *.tsbuildinfo
+dist-e2e/
