@@ -7,7 +7,6 @@ import { Seo } from '../components/Seo';
 import { staticRoutes } from '../lib/seoData.ts';
 import { HangTag, Reveal, Thread } from '../components/Motion';
 import { Icon, type IconName } from '../components/Icons';
-import { Accordion } from '../components/Accordion';
 import { DashboardMock, MockCatalog, MockChart, MockCustomers, MockRule, MockSegments } from '../sections/Mockups';
 import { useReducedMotion } from '../lib/motion';
 import { useGsapContext } from '../lib/gsap';
@@ -20,21 +19,8 @@ export default function Product() {
       <Header />
       <Flow />
       <Modules />
-      <Tour />
       <Architecture />
-      <Foundation />
-      <Governance />
-      <UseCases />
-      <PlansSnapshot />
-      <section className="section section-cream" aria-labelledby="pfaq-title">
-        <div className="container faq-grid">
-          <div>
-            <p className="eyebrow">Product FAQ</p>
-            <h2 id="pfaq-title">Before you open the dashboard.</h2>
-          </div>
-          <Accordion items={P.faqs} />
-        </div>
-      </section>
+      <Roadmap />
       <FinalCta />
     </>
   );
@@ -287,6 +273,34 @@ function Foundation() {
           </ul>
           <p className="foundation-disclaimer" data-testid="nvidia-disclaimer">{P.foundation.disclaimer}</p>
         </div>
+      </div>
+    </section>
+  );
+}
+
+function Roadmap() {
+  return (
+    <section id="roadmap" className="section section-dark on-dark roadmap" aria-labelledby="roadmap-title">
+      <div className="container">
+        <div className="section-head roadmap-head">
+          <p className="eyebrow">The roadmap</p>
+          <h2 id="roadmap-title">{P.roadmap.title}</h2>
+          <p className="lead roadmap-intro">{P.roadmap.intro}</p>
+        </div>
+        <ol className="roadmap-stages">
+          {P.roadmap.stages.map((stage, i) => (
+            <Reveal as="li" key={stage.title + stage.label} className="roadmap-stage" delay={i * 0.07}>
+              <span className="roadmap-step mono">{String(i + 1).padStart(2, '0')}</span>
+              <p className="roadmap-label">{stage.label}</p>
+              <h3>{stage.title}</h3>
+              <p>{stage.text}</p>
+              <ul className="roadmap-tags" aria-label={`${stage.title} technologies and capabilities`}>
+                {stage.tags.map((tag) => <li key={tag}>{tag}</li>)}
+              </ul>
+            </Reveal>
+          ))}
+        </ol>
+        <p className="roadmap-note">{P.roadmap.note}</p>
       </div>
     </section>
   );

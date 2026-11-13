@@ -83,8 +83,8 @@ export const staticRoutes: Record<string, SeoInput> = {
     jsonLd: [organizationJsonLd(), websiteJsonLd()],
   },
   '/product': {
-    title: fitTitle('Luvreno Platform: Profiles, Catalog, Segments, Rules'),
-    description: 'Explore the Luvreno platform: customer profiles, product catalog, segmentation, recommendation rules, reports and role-based access in one workspace.',
+    title: fitTitle('L.VIA by Luvreno: Relevant Product Discovery'),
+    description: 'Explore L.VIA by Luvreno: customer profiles, product catalogs, segments and clear recommendations, with a roadmap toward GPU-trained models.',
     path: '/product',
   },
   '/blog': {
