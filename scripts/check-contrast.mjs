@@ -76,6 +76,8 @@ const collect = (tokens) => {
   const offPalette = [];
   for (const el of document.querySelectorAll('body *')) {
     if (['SCRIPT', 'STYLE', 'NOSCRIPT', 'IFRAME'].includes(el.tagName)) continue;
+    // third-party live chat (Chatwoot) draws its own launcher; its colours are set in the Chatwoot dashboard
+    if (el.closest('.woot--bubble-holder, .woot-widget-holder, .woot-widget-bubble, [id^="cw-"]')) continue;
     const s = getComputedStyle(el);
     // palette rule: every painted colour is a token (alpha allowed). Only visible, painted things count:
     // SVG shapes (not svg/g/defs or mask content, where black and white are mask luminance), borders with width,
@@ -130,7 +132,8 @@ try {
       await page.waitForTimeout(300);
       const states = [{ name: 'page', act: async () => {} }];
       if (route === '/') {
-        states.push({ name: 'chat open', act: async () => { await page.click('[data-testid="chat-fab"]'); await page.waitForTimeout(200); } });
+        // the built-in assistant is optional (the live site uses Chatwoot); check its panel only when it is mounted
+        if (await page.locator('[data-testid="chat-fab"]').count()) states.push({ name: 'chat open', act: async () => { await page.click('[data-testid="chat-fab"]'); await page.waitForTimeout(200); } });
         if (width === 375) states.push({ name: 'menu open', act: async () => { await page.keyboard.press('Escape'); await page.click('[data-testid="menu-btn"]'); await page.waitForTimeout(600); } });
       }
       for (const st of states) {

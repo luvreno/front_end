@@ -3,7 +3,19 @@ import { problem, steps } from '../content';
 import { useGsapContext } from '../lib/gsap';
 import { useReducedMotion } from '../lib/motion';
 import { HangTag, Reveal, Thread } from '../components/Motion';
-import { Icon, type IconName } from '../components/Icons';
+import stepCustomers from '../assets/graphics/step-customers.svg';
+import stepCatalog from '../assets/graphics/step-catalog.svg';
+import stepSegments from '../assets/graphics/step-segments.svg';
+import stepRules from '../assets/graphics/step-rules.svg';
+import stepPerformance from '../assets/graphics/step-performance.svg';
+
+const stepArt: Record<(typeof steps)[number]['art'], string> = {
+  customers: stepCustomers,
+  catalog: stepCatalog,
+  segments: stepSegments,
+  rules: stepRules,
+  performance: stepPerformance,
+};
 
 export function ProblemSection() {
   const ref = useRef<HTMLElement>(null);
@@ -98,7 +110,7 @@ export function HowItWorks() {
             {steps.map((s, i) => (
               <Reveal as="li" key={s.title} className="how-step" delay={i * 0.08}>
                 <HangTag label={`Step ${String(i + 1).padStart(2, '0')}`} variant="cream" />
-                <span className="how-icon" aria-hidden="true"><Icon name={s.icon as IconName} size={30} /></span>
+                <img className="how-art" src={stepArt[s.art]} width={88} height={88} alt="" loading="lazy" decoding="async" />
                 <h3 className="how-step-title">{s.title}</h3>
                 <p>{s.text}</p>
               </Reveal>

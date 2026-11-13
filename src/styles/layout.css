@@ -206,6 +206,19 @@
 .footer-ext { display: flex; flex-wrap: wrap; gap: var(--space-4); margin-top: var(--space-4); }
 .footer-ext ul { list-style: none; padding: 0; margin: 0; display: flex; flex-wrap: wrap; gap: 0.5rem 1.25rem; }
 .footer-ext a { display: inline-flex; min-height: 44px; align-items: center; }
+.footer-ext-link {
+  gap: 0.6rem;
+  padding: 0.35rem 0.95rem 0.35rem 0.6rem;
+  border: 1px solid rgba(236, 219, 186, 0.28);
+  border-radius: 999px;
+  color: var(--c4);
+  text-decoration: none;
+  font-weight: 500;
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+.footer-ext-link .brand-icon { flex: none; border-radius: 3px; }
+.footer-ext-link:hover, .footer-ext-link:focus-visible { border-color: var(--c4); background-color: rgba(236, 219, 186, 0.08); }
+.footer-ext-link:hover span:not(.sr-only) { text-decoration: underline; text-underline-offset: 3px; }
 .footer-ext-title { font-size: var(--fs-mono); text-transform: uppercase; letter-spacing: 0.08em; color: var(--cream-soft); margin-bottom: 0.4rem; }
 .footer-contact { margin-top: var(--space-4); color: var(--cream-soft); }
 .footer-contact p { margin: 0 0 0.25rem; }

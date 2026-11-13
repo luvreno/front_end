@@ -4,21 +4,17 @@ import { features, ruleShelf, productNames, builtFor } from '../content';
 import { HangTag, Reveal } from '../components/Motion';
 import { ProductArt } from '../illustrations/Products';
 import { useReducedMotion } from '../lib/motion';
+import rulesBgUrl from '../assets/graphics/recommendation-rules-bg.webp';
 
 /* ----------------------------------------------------------- micro visuals */
 
-function MiniRules() {
+/** Recommendation Rules: full-card background illustration, faded into cream behind the text. */
+function RulesArt() {
   return (
-    <div className="mini mini-rules" aria-hidden="true">
-      <div className="rule-line"><span className="rule-kw mono">IF</span><span className="rule-slot slot-a">Segment: Home and living</span></div>
-      <div className="rule-line"><span className="rule-kw mono">AND</span><span className="rule-slot slot-b">Bought: Desk lamp</span></div>
-      <div className="rule-line"><span className="rule-kw mono">SHOW</span><span className="rule-slot slot-c">Complementary: Plant pot</span></div>
-      <div className="rule-products">
-        <ProductArt kind="lamp" size={64} />
-        <span className="rule-plus">+</span>
-        <ProductArt kind="plant" size={64} className="rule-pop" />
-      </div>
-    </div>
+    <>
+      <img className="bento-bg" src={rulesBgUrl} width={860} height={995} alt="" loading="lazy" decoding="async" />
+      <span className="bento-fade" aria-hidden="true" />
+    </>
   );
 }
 function MiniProfiles() {
@@ -67,7 +63,7 @@ function MiniReports() {
   );
 }
 const visuals: Record<string, () => ReactElement> = {
-  rules: MiniRules,
+  rules: RulesArt,
   profiles: MiniProfiles,
   catalog: MiniCatalog,
   segments: MiniSegments,

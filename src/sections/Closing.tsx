@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { about, closing, faqs, journalTeaser, dashboardUrl } from '../content';
+import { about, closing, faqs, faqCopy, journalTeaser, dashboardUrl } from '../content';
 import { posts, formatDate, categoryArt } from '../lib/blog';
 import { Accordion } from '../components/Accordion';
 import { HangTag, Reveal, Thread } from '../components/Motion';
@@ -63,9 +63,9 @@ export function FaqSection() {
     <section id="faq" className="section section-cream faq" aria-labelledby="faq-title">
       <div className="container faq-grid">
         <div>
-          <p className="eyebrow">FAQ</p>
-          <h2 id="faq-title">Questions, answered plainly.</h2>
-          <p className="lead muted">Still unsure? The assistant in the corner answers from this list, or you can write to us.</p>
+          <p className="eyebrow">{faqCopy.eyebrow}</p>
+          <h2 id="faq-title">{faqCopy.title}</h2>
+          <p className="lead muted">{faqCopy.lead}</p>
         </div>
         <Accordion items={faqs} testId="faq" />
       </div>

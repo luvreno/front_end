@@ -1,36 +1,23 @@
-import { MARK_PATHS } from '../lib/brand.ts';
+import logoUrl from '../assets/graphics/logo.svg';
+import logoOnDarkUrl from '../assets/graphics/logo-on-dark.svg';
+import markUrl from '../assets/graphics/mark.svg';
 
 interface MarkProps { size?: number; className?: string; title?: string; variant?: 'light' | 'dark' }
 
-export function LogoMark({ size = 40, className, title, variant = 'light' }: MarkProps) {
-  const holeFill = variant === 'dark' ? 'var(--c1)' : 'var(--c4)';
-  return (
-    <svg
-      className={className}
-      width={size}
-      height={size}
-      viewBox="0 0 64 64"
-      role={title ? 'img' : undefined}
-      aria-hidden={title ? undefined : true}
-      aria-label={title}
-      focusable="false"
-    >
-      <path d={MARK_PATHS.tag} fill="var(--c2)" />
-      <circle {...MARK_PATHS.hole} fill={holeFill} />
-      <path d={MARK_PATHS.l} fill="none" stroke="var(--c4)" strokeWidth="3.4" strokeLinecap="round" strokeDasharray="4.5 3.6" />
-      <path d={MARK_PATHS.thread} fill="none" stroke="var(--c3)" strokeWidth="2.6" strokeLinecap="round" />
-    </svg>
-  );
+/** The square brand mark (same artwork as the favicon). Decorative unless `title` is given. */
+export function LogoMark({ size = 40, className, title }: MarkProps) {
+  return <img className={className} src={markUrl} width={size} height={size} alt={title ?? ''} aria-hidden={title ? undefined : true} decoding="async" />;
 }
 
 interface LogoProps { variant?: 'light' | 'dark'; size?: number; className?: string }
 
-/** Mark plus wordmark. `light` = for cream backgrounds, `dark` = for charcoal. */
-export function Logo({ variant = 'light', size = 38, className = '' }: LogoProps) {
+/** Wordmark. `light` = for cream backgrounds, `dark` = for charcoal (green letters become cream). `size` = height in px. */
+export function Logo({ variant = 'light', size = 30, className = '' }: LogoProps) {
+  const h = size;
+  const w = Math.round((h * 1045) / 141);
   return (
     <span className={`logo logo-${variant} ${className}`}>
-      <LogoMark size={size} variant={variant} />
-      <span className="logo-word">Luvreno</span>
+      <img src={variant === 'dark' ? logoOnDarkUrl : logoUrl} width={w} height={h} alt="Luvreno" decoding="async" />
     </span>
   );
 }

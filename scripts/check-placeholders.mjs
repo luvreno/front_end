@@ -38,7 +38,7 @@ if (src.includes('PLACEHOLDER PRICES AND LIMITS: confirm with client')) {
 }
 if (c.isPlaceholder(c.legal.retention)) w('Legal', `Privacy retention: ${c.legal.retention}`);
 if (c.isPlaceholder(c.legal.governingLaw)) w('Legal', `Terms governing law: ${c.legal.governingLaw}`);
-w('Legal', 'Privacy and Terms carry the banner "Draft text, to be reviewed by the company’s legal advisor"');
+if (c.legal.draftBanner) w('Legal', `Privacy and Terms carry the banner "${c.legal.draftBanner}"`);
 if (/Company details to be added/.test(src)) w('Company', 'About section shows "Company details to be added"');
 
 if (!fs.existsSync(path.join(root, 'public', 'api', 'config.php'))) w('Server', 'public/api/config.php not present locally (expected): create it on the server from config.example.php');

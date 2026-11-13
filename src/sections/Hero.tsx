@@ -1,10 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { hero, marquee } from '../content';
-import { HangTag, Thread } from '../components/Motion';
-import { ProductArt } from '../illustrations/Products';
 import { useReducedMotion } from '../lib/motion';
 import { Icon } from '../components/Icons';
+import heroArtUrl from '../assets/graphics/hero.svg';
 
 export function Hero() {
   const words = hero.cycleWords;
@@ -13,7 +12,7 @@ export function Hero() {
   const reduced = useReducedMotion();
 
   useEffect(() => {
-    if (paused || reduced) return;
+    if (paused || reduced || words.length < 2) return;
     const t = window.setInterval(() => {
       if (document.visibilityState === 'visible') setI((n) => (n + 1) % words.length);
     }, hero.cycleMs);
@@ -35,41 +34,36 @@ export function Hero() {
                 <span key={w} className={`cycle-word${n === i ? ' is-on' : ''}`}>{w}</span>
               ))}
             </span>
-            <span className="sr-only">{words[0]}</span> {hero.titleAfter}
+            <span className="sr-only">{words[0]}</span>{hero.titleAfter && ` ${hero.titleAfter}`}
           </h1>
           <p className="lead hero-text">{hero.text}</p>
           <div className="btn-row">
             <Link to={hero.cta.to} className="btn btn-primary btn-lg" data-testid="hero-cta">
               {hero.cta.label} <span className="arrow" aria-hidden="true">→</span>
             </Link>
+            <Link to={hero.secondaryCta.to} className="btn btn-secondary btn-lg" data-testid="hero-secondary-cta">
+              {hero.secondaryCta.label}
+            </Link>
           </div>
         </div>
-        <HeroShelf />
+        <HeroArt />
       </div>
       <Marquee />
     </section>
   );
 }
 
-function HeroShelf() {
-  const items = [
-    { kind: 'lamp' as const, tag: hero.tags[0], variant: 'green' as const },
-    { kind: 'mug' as const, tag: hero.tags[1], variant: 'cream' as const },
-    { kind: 'plant' as const, tag: hero.tags[2], variant: 'dark' as const },
-  ];
+function HeroArt() {
   return (
-    <figure className="hero-shelf" aria-label="Illustration of three sample products on a shelf, joined by a thread with labels">
-      <span className="label-illustrative hero-label">{hero.shelfLabel}</span>
-      <Thread className="hero-thread" viewBox="0 0 600 120" axis="x" scrub={false} d="M10 60 C 80 0, 150 0, 200 52 S 330 110, 400 52 S 520 -4, 590 50" />
-      <ul className="shelf-items">
-        {items.map((it, n) => (
-          <li key={it.kind} className="shelf-item">
-            <HangTag label={it.tag} variant={it.variant} delay={0.3 + n * 0.25} />
-            <ProductArt kind={it.kind} size={150} className="shelf-art" />
-          </li>
-        ))}
-      </ul>
-      <div className="shelf-plank" aria-hidden="true" />
+    <figure className="hero-art">
+      <img
+        src={heroArtUrl}
+        width={900}
+        height={675}
+        alt={hero.artAlt}
+        fetchPriority="high"
+        decoding="async"
+      />
     </figure>
   );
 }

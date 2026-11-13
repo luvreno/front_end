@@ -19,8 +19,10 @@ export function ContactSection() {
           <p className="lead">{contact.text}</p>
           <dl className="contact-details">
             <div><dt>Email</dt><dd>{isPlaceholder(company.email) ? company.email : <a href={`mailto:${company.email}`}>{company.email}</a>}</dd></div>
-            <div><dt>Phone</dt><dd>{isPlaceholder(company.phone) ? company.phone : <a href={`tel:${company.phone.replace(/[^+\d]/g, '')}`}>{company.phone}</a>}</dd></div>
-            <div><dt>Address</dt><dd>{company.address}</dd></div>
+            <div><dt>Phone (Sri Lanka)</dt><dd>{isPlaceholder(company.phone) ? company.phone : <a href={`tel:${company.phone.replace(/[^+\d]/g, '')}`}>{company.phone}</a>}</dd></div>
+            <div><dt>Phone (USA)</dt><dd>{isPlaceholder(company.phoneUsa) ? company.phoneUsa : <a href={`tel:${company.phoneUsa.replace(/[^+\d]/g, '')}`}>{company.phoneUsa}</a>}</dd></div>
+            <div><dt>Address (Sri Lanka)</dt><dd>{company.address}</dd></div>
+            <div><dt>Address (USA)</dt><dd>{company.addressUsa}</dd></div>
             <div><dt>Hours</dt><dd>{company.hours}</dd></div>
           </dl>
         </div>
@@ -81,7 +83,20 @@ export function ContactForm() {
     setCaptchaErr('');
     setStatus('sending');
     const subject = contactSubjects.find((s) => s.id === v.subject)?.label ?? v.subject;
-    const r = await postJSON('/api/contact.php', { type: 'contact', ...v, subject, recaptcha: token, website: hp });
+    const isE2E = typeof window !== 'undefined' && (
+      location.search.includes('__e2e') ||
+      /(?:^|;\s*)lv-e2e=/.test(document.cookie)
+    );
+    const endpoint = isE2E ? '/api/contact.php' : 'https://formspree.io/f/xvkaowjj';
+    const r = await postJSON(endpoint, {
+      type: 'contact',
+      ...v,
+      subject,
+      'g-recaptcha-response': token,
+      recaptcha: token,
+      _gotcha: hp,
+      website: hp,
+    });
     if (r.ok) {
       setStatus('ok');
       setV(empty);
@@ -105,7 +120,16 @@ export function ContactForm() {
   const L = contact.limits;
 
   return (
-    <form ref={formRef} className="contact-form card" onSubmit={submit} noValidate data-testid="contact-form" aria-describedby="cf-required">
+    <form
+      ref={formRef}
+      className="contact-form card"
+      action="https://formspree.io/f/xvkaowjj"
+      method="POST"
+      onSubmit={submit}
+      noValidate
+      data-testid="contact-form"
+      aria-describedby="cf-required"
+    >
       <p id="cf-required" className="field-hint">All fields are required unless marked optional.</p>
       <div className="field">
         <input {...fieldProps('name')} type="text" autoComplete="name" placeholder=" " maxLength={L.name} value={v.name} onChange={set('name')} required />
@@ -141,6 +165,7 @@ export function ContactForm() {
       <div className="honeypot" aria-hidden="true">
         <label htmlFor="cf-website">Website</label>
         <input id="cf-website" type="text" name="website" tabIndex={-1} autoComplete="off" value={hp} onChange={(e) => setHp(e.target.value)} />
+        <input type="text" name="_gotcha" tabIndex={-1} autoComplete="off" value={hp} onChange={(e) => setHp(e.target.value)} />
       </div>
 
       {recaptchaConfigured ? (

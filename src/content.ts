@@ -45,13 +45,18 @@ export const routes = {
 /* --------------------------------------------------------------- company */
 
 export const company = {
-  legalName: '[Legal name to be added]',
+  legalName: 'Luvreno PVT LTD',
+  legalNameUsa: 'Luvreno LLC',
   tradingName: 'Luvreno',
-  phone: '[Phone to be added]',
-  email: '[Email to be added]',
-  address: '[Address to be added]',
+  founder: 'Akash Perera',
+  foundedDate: '2023 November 10',
+  phone: '+94112448408',
+  phoneUsa: '+15086955665',
+  email: 'help@luvreno.net',
+  address: '234 Panchikawatte Road, 10 Colombo, Sri Lanka',
+  addressUsa: '1549 Rt 9, Halfmoon NY 12065, United States',
   website: 'https://luvreno.net',
-  hours: '[Business hours to be added]',
+  hours: 'Monday to Friday, 9:00 AM - 6:00 PM',
 };
 
 /* ------------------------------------------------- social and citations */
@@ -59,11 +64,12 @@ export const company = {
 export interface ExtLink { label: string; url: string }
 /** Add real profile URLs only. Empty strings are ignored, empty groups are hidden. */
 export const socialLinks: ExtLink[] = [
-  // { label: 'LinkedIn', url: 'https://www.linkedin.com/company/...' },
+  { label: 'LinkedIn', url: 'https://www.linkedin.com/company/luvreno/' },
 ];
 /** Business listings and citation sources. Real URLs only. */
 export const citationLinks: ExtLink[] = [
-  // { label: 'Crunchbase', url: 'https://www.crunchbase.com/organization/...' },
+  { label: 'Crunchbase', url: 'https://www.crunchbase.com/organization/luvreno' },
+  { label: 'F6S', url: 'https://www.f6s.com/luvreno' },
 ];
 export const realLinks = (list: ExtLink[]) =>
   list.filter((l) => /^https:\/\/[^\s#]+\.[^\s#]+/.test(l.url.trim()));
@@ -86,14 +92,15 @@ export const topStrip = { text: 'The weekly edit: new from the journal', to: rou
 
 export const hero = {
   eyebrow: 'AI Customer Personalization & Recommendation Engine',
-  titleBefore: 'Show Every Customer the',
-  cycleWords: ['Right', 'Relevant', 'Useful', 'Timely'],
-  titleAfter: 'Product Next.',
+  titleBefore: 'Make Every Customer Experience More',
+  /** One word = no cycling. Add more words to rotate them. */
+  cycleWords: ['Personal.'],
+  titleAfter: '',
   cycleMs: 2600,
-  text: 'Manage customer profiles, organise your product catalog, build segments and configure recommendation rules, then review how recommendations perform.',
+  text: 'Help your customers discover products that genuinely match their interests. Luvreno brings customer insights, product information and recommendation management together, helping retail and e-commerce businesses create more relevant shopping experiences.',
   cta: { label: 'Explore the Platform', to: routes.product },
-  shelfLabel: 'Illustrative',
-  tags: ['For you', 'Often bought together', 'Similar to'],
+  secondaryCta: { label: 'Discover What We Do', to: '/#about' },
+  artAlt: 'A customer profile at the centre, linked to a dress, a pair of sneakers and a laptop recommended for them',
 };
 
 export const marquee = {
@@ -128,11 +135,11 @@ export const problem = {
 /* ---------------------------------------------------------- how it works */
 
 export const steps = [
-  { icon: 'profile', title: 'Add customers and preferences', text: 'Create profiles with attributes, preferences and purchase history in one place.' },
-  { icon: 'catalog', title: 'Organise the product catalog', text: 'Keep names, categories, attributes, pricing and availability structured.' },
-  { icon: 'segment', title: 'Build segments', text: 'Group customers by attributes, purchase frequency and product interests.' },
-  { icon: 'rule', title: 'Configure recommendation rules', text: 'Decide which products are shown to which customers, and why.' },
-  { icon: 'report', title: 'Review performance', text: 'Compare impressions, clicks and conversions over the periods you choose.' },
+  { art: 'customers', title: 'Add customers and preferences', text: 'Create profiles with attributes, preferences and purchase history in one place.' },
+  { art: 'catalog', title: 'Organise the product catalog', text: 'Keep names, categories, attributes, pricing and availability structured.' },
+  { art: 'segments', title: 'Build segments', text: 'Group customers by attributes, purchase frequency and product interests.' },
+  { art: 'rules', title: 'Configure recommendation rules', text: 'Decide which products are shown to which customers, and why.' },
+  { art: 'performance', title: 'Review performance', text: 'Compare impressions, clicks and conversions over the periods you choose.' },
 ] as const;
 
 /* -------------------------------------------------------------- features */
@@ -250,47 +257,48 @@ export const about = {
     { title: 'Clear engagement reporting', text: 'Impressions, clicks and conversions per period.' },
     { title: 'Controlled access', text: 'Roles decide who sees customer information.' },
   ],
-  note: 'Company details to be added.',
+  note: 'Founded on November 10, 2023 by Akash Perera. Operating as Luvreno PVT LTD in Sri Lanka and Luvreno LLC in the United States.',
 };
 
 /* -------------------------------------------------------------------- faq */
 
 export interface Faq { q: string; a: string; keywords: string[] }
+export const faqCopy = {
+  eyebrow: 'FAQ',
+  title: 'Explore The Luvreno Experience',
+  lead: 'Still have a question? Use the chat in the corner or write to us through the contact form.',
+};
+
 export const faqs: Faq[] = [
   {
-    q: 'What is Luvreno?',
-    a: 'Luvreno is a customer and product management application for retail and e-commerce teams. It keeps customer profiles, your product catalog, segments and recommendation rules in one workspace, and reports on how recommendations perform.',
-    keywords: ['what is luvreno', 'luvreno', 'about luvreno', 'platform', 'what does it do', 'overview'],
+    q: 'What does Luvreno offer to retail and e-commerce businesses?',
+    a: 'Luvreno provides a centralized platform for managing customer profiles, product catalogs, customer segments and product recommendations. It helps businesses organize important information, understand customer preferences and manage more relevant product discovery experiences.',
+    keywords: ['what is luvreno', 'luvreno', 'about luvreno', 'platform', 'what does it do', 'overview', 'offer'],
   },
   {
-    q: 'How are recommendations produced?',
-    a: 'From rules you configure and the data you provide, not from a trained model. You choose rule types such as customer-specific, segment-based, related-product or complementary-product, and Luvreno creates recommendation records based on those rules.',
-    keywords: ['how', 'recommendation', 'produced', 'generated', 'work', 'ai', 'model', 'algorithm', 'rules'],
+    q: 'How can Luvreno help businesses understand their customers better?',
+    a: 'Luvreno allows businesses to maintain customer profiles, preferences, purchasing information and recorded interactions. These details can be used to organize customer segments and gain a clearer understanding of different shopping interests and behaviours.',
+    keywords: ['understand', 'customers', 'profile', 'profiles', 'preferences', 'segment', 'segments', 'behaviour', 'behavior', 'interactions'],
   },
   {
-    q: 'Does it track shoppers live or connect to my store?',
-    a: 'No. Luvreno does not track shoppers live and does not connect directly to e-commerce platforms out of the box. Direct integrations and live tracking would need additional implementation.',
-    keywords: ['track', 'tracking', 'live', 'real time', 'realtime', 'connect', 'shopify', 'store', 'integration', 'integrate', 'plugin'],
+    q: 'Can businesses create personalized product recommendations?',
+    a: 'Yes. Luvreno supports configurable recommendation workflows based on customer preferences, product attributes and available purchase history. Businesses can manage customer-specific, segment-based, related-product and complementary-product suggestions.',
+    keywords: ['recommendation', 'recommendations', 'personalized', 'personalised', 'personalization', 'suggestions', 'related', 'complementary', 'rules', 'how'],
   },
   {
-    q: 'What is the difference between manual and calculated segments?',
-    a: 'A manual segment is a group you assign customers to yourself. A calculated segment is a result produced from criteria you define, such as profile attributes, purchase frequency or product interests. Luvreno keeps the two clearly apart.',
-    keywords: ['segment', 'segments', 'manual', 'calculated', 'difference', 'group'],
+    q: 'Does Luvreno provide insights into recommendation performance?',
+    a: 'Yes. Businesses can review available recommendation impressions, clicks and conversion records through performance dashboards and reports. These insights help teams understand recommendation engagement and evaluate their personalization activities.',
+    keywords: ['recommendation performance', 'insights', 'performance', 'reports', 'report', 'analytics', 'impressions', 'clicks', 'conversions', 'metrics'],
   },
   {
-    q: 'How is customer information protected?',
-    a: 'With role-based access and audit records. Access to customer profiles, product records and administrative functions depends on the role, and changes to customers, segment criteria and recommendation settings are recorded.',
-    keywords: ['protect', 'protected', 'security', 'secure', 'privacy', 'gdpr', 'data', 'safe', 'access', 'audit'],
+    q: 'Can Luvreno support different business teams and user roles?',
+    a: 'Yes. Luvreno supports secure authentication and role-based access management. This helps businesses control access to customer information, product records and administrative functions according to assigned permissions.',
+    keywords: ['roles', 'role', 'team', 'teams', 'access', 'permissions', 'security', 'secure', 'authentication', 'protect', 'data'],
   },
   {
-    q: 'What plans are available?',
-    a: 'Three monthly plans: Starter, Growth and Enterprise. Starter and Growth have a fixed monthly price, and Enterprise is priced on request for multiple stores, advanced reporting and team access. See the Pricing section for details.',
-    keywords: ['plan', 'plans', 'price', 'pricing', 'cost', 'how much', 'subscription', 'monthly', 'starter', 'growth', 'enterprise'],
-  },
-  {
-    q: 'How do I get started?',
-    a: 'Open the dashboard to sign in, or send us a message through the contact form and we will help you set up your first customers, products and rules.',
-    keywords: ['start', 'started', 'begin', 'sign up', 'signup', 'sign in', 'login', 'log in', 'account', 'dashboard', 'onboard'],
+    q: 'Can Luvreno adapt to the needs of growing retail businesses?',
+    a: 'Luvreno is designed around a flexible subscription model, with proposed plans accommodating different customer profile volumes, product catalog sizes and business requirements. Enterprise-oriented options may also support multiple stores, expanded reporting and team access management.',
+    keywords: ['grow', 'growing', 'scale', 'plans', 'plan', 'subscription', 'enterprise', 'stores', 'adapt'],
   },
 ];
 
@@ -309,8 +317,8 @@ export type SubjectId = (typeof contactSubjects)[number]['id'];
 
 export const contact = {
   eyebrow: 'Contact',
-  title: 'Talk to us.',
-  text: 'Questions about plans, setup or the dashboard. Send a message and we will reply by email.',
+  title: "Let's Build Better Customer Experiences",
+  text: 'Have questions about customer personalization or product recommendations? Connect with our team and explore how Luvreno can support your business.',
   limits: { name: 100, email: 254, company: 120, message: 3000, messageMin: 10 },
   notConfigured: 'Contact form not configured',
   success: 'Thank you. Your message was received and we will reply by email.',
@@ -318,7 +326,7 @@ export const contact = {
 };
 
 export const closing = {
-  title: 'Ready to make your shelves more relevant?',
+  title: 'Make every shopping journey more relevant with recommendations that understand customer preferences.',
   cta: 'Open the Dashboard',
 };
 
@@ -353,6 +361,9 @@ export const pricing = {
   notConfigured: 'Sandbox checkout not configured',
   customNote: 'Need something custom?',
   customLink: 'Talk to us.',
+  /** Button label on plan cards: 'Choose Starter', 'Choose Growth'. The price is read out to screen readers too. */
+  planCta: 'Choose',
+  contactCta: 'Contact us',
   plans: [
     {
       id: 'starter',
@@ -524,7 +535,6 @@ export const newsletter = {
 export const footer = {
   line: 'Every shelf, a little more relevant.',
   links: [
-    { label: 'Product', to: '/product' },
     { label: 'Features', to: '/#features' },
     { label: 'How It Works', to: '/#how-it-works' },
     { label: 'Pricing', to: '/#pricing' },
@@ -532,11 +542,8 @@ export const footer = {
     { label: 'About', to: '/#about' },
     { label: 'FAQ', to: '/#faq' },
     { label: 'Contact', to: '/#contact' },
-    { label: 'Sitemap', to: '/sitemap.xml', plain: true },
     { label: 'Privacy', to: '/privacy' },
     { label: 'Terms', to: '/terms' },
-    { label: 'Cookies', to: '/cookies' },
-    { label: 'Dashboard', to: 'DASHBOARD', external: true },
   ],
 };
 
@@ -558,7 +565,7 @@ export const chatbot = {
   title: 'Luvreno assistant',
   label: 'Automated assistant, not a live agent.',
   greeting: 'Hello. I can answer common questions about Luvreno from our FAQ. What would you like to know?',
-  chips: ['What is Luvreno?', 'Pricing', 'Does it track shoppers live?', 'How do I sign in?', 'Contact'],
+  chips: ['What does Luvreno offer?', 'Pricing', 'Can I see recommendation performance?', 'How do I sign in?', 'Contact'],
   fallback: 'I am not sure about that one, and I would rather not guess. You can send the question to the team through the contact form.',
   contactButton: 'Ask the team',
   storageKey: 'lv-chat-v1',
@@ -567,9 +574,9 @@ export const chatbot = {
 /* ------------------------------------------------------------------- legal */
 
 export const legal = {
-  draftBanner: 'Draft text, to be reviewed by the company’s legal advisor',
-  retention: '[Retention periods to be confirmed]',
-  governingLaw: '[Governing law and jurisdiction to be confirmed]',
+  draftBanner: '',
+  retention: 'We retain personal data for up to 24 months as described in our Privacy Policy',
+  governingLaw: 'The laws of Sri Lanka, excluding its conflicts of law rules, shall govern these Terms and Your use of the Service',
 };
 
 export const blogCopy = {

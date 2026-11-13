@@ -17,6 +17,15 @@ export function loadGsap(): Promise<GsapModule> {
 }
 
 /**
+ * Jump to `y` with no animation. The behaviour is passed explicitly: toggling the CSS
+ * scroll-behavior around the call is not reliable (Chromium can still use the cached
+ * `smooth` value, start an animation, and a later correction then stops it half way).
+ */
+export function instantScrollTo(y: number) {
+  window.scrollTo({ top: y, left: 0, behavior: 'instant' as ScrollBehavior });
+}
+
+/**
  * Refresh ScrollTrigger positions if GSAP has been loaded, without letting it
  * restore a scroll position it cached earlier (that would undo ScrollManager).
  */
@@ -25,13 +34,7 @@ export function refreshScrollTriggers() {
   const y = window.scrollY;
   loaded.ScrollTrigger.clearScrollMemory('manual');
   loaded.ScrollTrigger.refresh();
-  if (Math.abs(window.scrollY - y) > 1) {
-    const root = document.documentElement;
-    const prev = root.style.scrollBehavior;
-    root.style.scrollBehavior = 'auto';
-    window.scrollTo(0, y);
-    root.style.scrollBehavior = prev;
-  }
+  if (Math.abs(window.scrollY - y) > 1) instantScrollTo(y);
 }
 
 /** Forget any scroll positions ScrollTrigger remembered for the previous page. */
@@ -53,11 +56,7 @@ function installGuard(m: GsapModule) {
   m.ScrollTrigger.addEventListener('refresh', () => {
     if (!intended || performance.now() > intended.until) return;
     if (Math.abs(window.scrollY - intended.y) > 2) {
-      const root = document.documentElement;
-      const prev = root.style.scrollBehavior;
-      root.style.scrollBehavior = 'auto';
-      window.scrollTo(0, intended.y);
-      root.style.scrollBehavior = prev;
+      instantScrollTo(intended.y);
       m.ScrollTrigger.update();
     }
   });
@@ -77,6 +76,22 @@ export function settleScroll(y: number) {
 /** Cancels the guard as soon as the visitor scrolls on purpose. */
 export function releaseScroll() {
   intended = null;
+}
+
+/** True while ScrollManager is still holding a position it chose for a navigation. */
+export const scrollHeld = () => !!intended && performance.now() < intended.until;
+
+// Any scroll that did not come from ScrollManager (scrollbar drag, find-in-page, scripts) ends the hold.
+// ScrollTrigger's own restore is corrected synchronously in the 'refresh' listener above, so by the
+// time its scroll event arrives the position already matches and the hold survives.
+if (typeof window !== 'undefined') {
+  window.addEventListener(
+    'scroll',
+    () => {
+      if (intended && Math.abs(window.scrollY - intended.y) > 4) intended = null;
+    },
+    { passive: true },
+  );
 }
 
 type Setup = (m: GsapModule) => void;

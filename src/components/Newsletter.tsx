@@ -24,13 +24,25 @@ export function NewsletterForm({ compact = false, idPrefix = 'nl' }: { compact?:
     }
     setErr('');
     setStatus('loading');
-    const r = await postJSON('/api/contact.php', { type: 'newsletter', email: v, website: hp });
+    const isE2E = typeof window !== 'undefined' && (
+      location.search.includes('__e2e') ||
+      /(?:^|;\s*)lv-e2e=/.test(document.cookie)
+    );
+    const endpoint = isE2E ? '/api/contact.php' : 'https://formspree.io/f/xwlokrdg';
+    const r = await postJSON(endpoint, { type: 'newsletter', email: v, _gotcha: hp, website: hp });
     setStatus(r.ok ? 'ok' : 'error');
     if (r.ok) setEmail('');
   };
 
   return (
-    <form className={`nl-form${compact ? ' nl-compact' : ''}`} onSubmit={submit} noValidate data-testid="newsletter-form">
+    <form
+      className={`nl-form${compact ? ' nl-compact' : ''}`}
+      action="https://formspree.io/f/xwlokrdg"
+      method="POST"
+      onSubmit={submit}
+      noValidate
+      data-testid="newsletter-form"
+    >
       <div className="nl-row">
         <div className="field nl-field">
           <input
@@ -52,6 +64,7 @@ export function NewsletterForm({ compact = false, idPrefix = 'nl' }: { compact?:
         <div className="honeypot" aria-hidden="true">
           <label htmlFor={`${emailId}-hp`}>Leave this empty</label>
           <input id={`${emailId}-hp`} type="text" name="website" tabIndex={-1} autoComplete="off" value={hp} onChange={(e) => setHp(e.target.value)} />
+          <input type="text" name="_gotcha" tabIndex={-1} autoComplete="off" value={hp} onChange={(e) => setHp(e.target.value)} />
         </div>
         <button type="submit" className="btn btn-primary nl-btn" disabled={status === 'loading'} aria-disabled={status === 'loading'}>
           {status === 'loading' ? (<><span className="spinner" aria-hidden="true" /> Sending</>) : 'Subscribe'}

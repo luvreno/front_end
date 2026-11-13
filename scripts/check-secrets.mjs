@@ -7,8 +7,8 @@ import path from 'node:path';
 const root = path.resolve(import.meta.dirname, '..');
 const files = execFileSync('git', ['ls-files', '-co', '--exclude-standard'], { cwd: root }).toString().split('\n').filter(Boolean);
 
-// Google's documented public reCAPTCHA TEST secret, used only by scripts/check-php.mjs
-const ALLOWED = ['6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe', 'test-pass-123'];
+// Google's documented public reCAPTCHA TEST secret, used only by scripts/check-php.mjs, and Chatwoot public website token
+const ALLOWED = ['6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe', 'test-pass-123', 'oUR7ZgW2oeBYyFgki5dMie5Q'];
 const patterns = [
   ['Stripe secret key', /\b(sk|rk)_(live|test)_[0-9a-zA-Z]{10,}/],
   ['Stripe webhook secret', /\bwhsec_[0-9a-zA-Z]{10,}/],

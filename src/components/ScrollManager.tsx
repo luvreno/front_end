@@ -1,14 +1,11 @@
 import { useEffect, useLayoutEffect, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
-import { clearScrollMemory, refreshScrollTriggers, releaseScroll, settleScroll } from '../lib/gsap';
+import { clearScrollMemory, instantScrollTo, refreshScrollTriggers, releaseScroll, scrollHeld, settleScroll } from '../lib/gsap';
 
 const jumpTo = (top: number) => {
-  const root = document.documentElement;
-  const prev = root.style.scrollBehavior;
-  root.style.scrollBehavior = 'auto';
-  window.scrollTo(0, top);
-  root.style.scrollBehavior = prev;
-  settleScroll(top);
+  instantScrollTo(top);
+  // hold the position the browser actually reached (it may clamp near the page end)
+  settleScroll(window.scrollY);
 };
 
 const reduced = () => {
@@ -23,7 +20,7 @@ const reduced = () => {
  * Top of page on every route change unless the URL has a hash.
  * With a hash, waits for the element (lazy routes) and scrolls to it, then keeps it in place
  * for a moment while late layout (fonts, lazy chunks, ScrollTrigger refreshes) settles.
- * Any real user scroll input ends the correction immediately.
+ * Any scroll the code did not cause (wheel, touch, keys, scrollbar drag) ends the correction.
  */
 export function ScrollManager() {
   const { pathname, hash, key } = useLocation();
@@ -38,7 +35,6 @@ export function ScrollManager() {
     const onInput = (e: Event) => {
       if (e instanceof KeyboardEvent && !['ArrowDown', 'ArrowUp', 'PageDown', 'PageUp', 'Home', 'End', ' '].includes(e.key)) return;
       releaseScroll();
-      window.dispatchEvent(new Event('lv-user-scroll'));
     };
     const opts = { passive: true, capture: true } as const;
     window.addEventListener('wheel', onInput, opts);
@@ -57,21 +53,16 @@ export function ScrollManager() {
     let raf = 0;
     let settle = 0;
     let cancelled = false;
-    const stop = () => {
-      cancelled = true;
-      window.clearInterval(settle);
-    };
-    window.addEventListener('lv-user-scroll', stop);
     clearScrollMemory();
 
     if (!hash) {
-      jumpTo(0);
-      // hold the top briefly while the new route lays out
-      const until = performance.now() + 1200;
-      settle = window.setInterval(() => {
-        if (cancelled || performance.now() > until) return window.clearInterval(settle);
-        if (window.scrollY > 2) jumpTo(0);
-      }, 100);
+      if (samePage && !reduced() && window.scrollY > 0) {
+        // logo or "/" link on the page you are already on: glide back to the top
+        releaseScroll();
+        window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+      } else {
+        jumpTo(0);
+      }
     } else {
       const id = decodeURIComponent(hash.slice(1));
       const started = performance.now();
@@ -89,10 +80,9 @@ export function ScrollManager() {
           window.scrollTo({ top: target(), behavior: 'smooth' });
         } else {
           jumpTo(target());
-          // keep the target in place while layout settles (max 2.5s)
-          const until = performance.now() + 2500;
+          // follow the target if late layout moves it, until the hold ends (time out or any other scroll)
           settle = window.setInterval(() => {
-            if (cancelled || performance.now() > until) return window.clearInterval(settle);
+            if (cancelled || !scrollHeld()) return window.clearInterval(settle);
             const t = target();
             if (Math.abs(t - window.scrollY) > 4) jumpTo(t);
           }, 150);
@@ -102,12 +92,14 @@ export function ScrollManager() {
       };
       raf = requestAnimationFrame(go);
     }
-    const r = window.setTimeout(refreshScrollTriggers, 120);
+    // New page: re-measure scroll animations once it has laid out. Not for jumps within the same page:
+    // the layout has not changed, and a refresh re-sets the scroll position, which cancels a smooth scroll.
+    const r = samePage ? 0 : window.setTimeout(refreshScrollTriggers, 120);
     return () => {
-      stop();
+      cancelled = true;
+      window.clearInterval(settle);
       cancelAnimationFrame(raf);
       window.clearTimeout(r);
-      window.removeEventListener('lv-user-scroll', stop);
     };
   }, [pathname, hash, key]);
 

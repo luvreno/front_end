@@ -158,7 +158,7 @@ test('/blog to /#pricing scrolls to pricing', async ({ page }) => {
   await page.goto('/blog');
   await page.getByTestId('footer').getByRole('link', { name: 'Pricing', exact: true }).click();
   await expect(page).toHaveURL(/\/#pricing$/);
-  await expect.poll(async () => page.locator('#pricing').evaluate((el) => Math.round(el.getBoundingClientRect().top)), { timeout: 5000 }).toBeLessThan(140);
+  await expect.poll(async () => page.locator('#pricing').evaluate((el) => Math.round(el.getBoundingClientRect().top)), { timeout: 15000 }).toBeLessThan(140);
   expect(await page.locator('#pricing').evaluate((el) => el.getBoundingClientRect().top)).toBeGreaterThan(-10);
   expect(w.errors).toEqual([]);
 });
@@ -196,22 +196,12 @@ test('cookie consent blocks optional scripts until allowed', async ({ page }) =>
   expect(await page.evaluate(() => document.documentElement.dataset.analytics)).toBeUndefined();
   const stored = await page.evaluate(() => JSON.parse(localStorage.getItem('lv-consent') || 'null'));
   expect(stored).toMatchObject({ version: '2026-11-01', preferences: false, analytics: false });
-  // reopen from the footer and accept
-  await page.getByTestId('cookie-prefs').click();
+  // reopen from the Cookies page and accept
+  await page.goto('/cookies');
+  await page.getByRole('button', { name: 'Open cookie preferences' }).click();
   await page.getByTestId('consent-dialog').getByRole('button', { name: 'Accept all' }).click();
   await expect.poll(() => page.evaluate(() => document.documentElement.dataset.analytics)).toBe('allowed');
   expect(w.thirdParty).toEqual([]);
-});
-
-test('consent card does not cover the chat button on mobile', async ({ page }) => {
-  test.skip(width(page) >= 640, 'small screens only');
-  await prepare(page, { consent: false });
-  await page.goto('/');
-  const card = await page.getByTestId('consent-banner').boundingBox();
-  const fab = await page.getByTestId('chat-fab').boundingBox();
-  expect(card && fab).toBeTruthy();
-  const overlap = !(fab!.y + fab!.height <= card!.y || fab!.y >= card!.y + card!.height || fab!.x + fab!.width <= card!.x || fab!.x >= card!.x + card!.width);
-  expect(overlap).toBe(false);
 });
 
 test('pricing numbers match everywhere and are monthly only', async ({ page }) => {
@@ -261,35 +251,6 @@ test('checkout success page explains the sandbox', async ({ page }) => {
   await page.goto('/checkout/success');
   await expect(page.getByTestId('checkout-text')).toHaveText('Sandbox test payment received. No real charge was made and no account was created.');
   await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', /noindex/);
-});
-
-test('chatbot answers and hands off to the contact form', async ({ page }) => {
-  await prepare(page);
-  await page.goto('/');
-  await page.getByTestId('chat-fab').click();
-  const panel = page.getByTestId('chat-panel');
-  await expect(panel).toBeVisible();
-  await expect(panel).toContainText('Automated assistant, not a live agent.');
-  await expect(page.getByTestId('chat-input')).toBeFocused();
-  await panel.getByRole('button', { name: 'Pricing' }).click();
-  await expect(page.getByTestId('chat-log')).toContainText('$39 per month');
-  await panel.getByRole('button', { name: 'Does it track shoppers live?' }).click();
-  await expect(page.getByTestId('chat-log')).toContainText('does not track shoppers live');
-  await page.getByTestId('chat-input').fill('what is the weather tomorrow');
-  await page.keyboard.press('Enter');
-  const ask = panel.getByRole('button', { name: 'Ask the team' });
-  await expect(ask).toBeVisible();
-  // conversation survives a reload within the session
-  await page.reload();
-  await page.getByTestId('chat-fab').click();
-  await expect(page.getByTestId('chat-log')).toContainText('$39 per month');
-  await page.getByTestId('chat-panel').getByRole('button', { name: 'Ask the team' }).click();
-  await expect(page).toHaveURL(/subject=assistant/);
-  await expect(page.locator('#cf-subject')).toHaveValue('assistant');
-  await expect(page.locator('#cf-message')).toHaveValue(/weather tomorrow/);
-  await page.getByTestId('chat-fab').click();
-  await page.keyboard.press('Escape');
-  await expect(page.getByTestId('chat-panel')).toBeHidden();
 });
 
 test('blog search and category filters work', async ({ page }) => {

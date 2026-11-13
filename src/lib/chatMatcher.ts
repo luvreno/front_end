@@ -1,4 +1,4 @@
-import { faqs, pricing, company, isPlaceholder } from '../content';
+import { faqs, pricing } from '../content';
 import { getPrice } from './pricing';
 
 export type Action = 'contact' | 'dashboard' | 'pricing';
@@ -27,9 +27,7 @@ const intents: Intent[] = [
     id: 'contact', weight: 1.1,
     keywords: ['contact', 'email', 'phone', 'talk', 'human', 'person', 'reach', 'support', 'call'],
     answer: () => ({
-      text: isPlaceholder(company.email)
-        ? 'The quickest way to reach the team is the contact form on the home page.'
-        : `You can use the contact form or email ${company.email}.`,
+      text: 'The quickest way to reach the team is the contact form on the home page.',
       matched: true,
       action: 'contact',
     }),

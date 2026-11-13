@@ -16,7 +16,6 @@ const Post = lazy(() => import('./pages/Post'));
 const Legal = lazy(() => import('./pages/Legal'));
 const CheckoutSuccess = lazy(() => import('./pages/CheckoutSuccess'));
 const NotFound = lazy(() => import('./pages/NotFound'));
-const Chatbot = lazy(() => import('./components/Chatbot'));
 
 export default function App() {
   return (
@@ -44,9 +43,6 @@ export default function App() {
         </main>
         <Footer />
         <CookieConsent />
-        <Suspense fallback={null}>
-          <Chatbot />
-        </Suspense>
       </MotionProvider>
     </ConsentProvider>
   );

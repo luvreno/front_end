@@ -15,15 +15,12 @@ describe('chat matcher', () => {
     }
   });
 
-  it('answers what Luvreno is from the FAQ', () => {
-    expect(answer('What is Luvreno?').text).toBe(faqs[0].a);
+  it('answers what Luvreno offers from the FAQ', () => {
+    expect(answer('What does Luvreno offer?').text).toBe(faqs[0].a);
   });
 
-  it('says no to live tracking', () => {
-    const a = answer('Does it track shoppers live?');
-    expect(a.matched).toBe(true);
-    expect(a.text).toMatch(/^No\./);
-    expect(answer('can it connect to shopify').text).toMatch(/does not connect/);
+  it('answers performance questions from the FAQ', () => {
+    expect(answer('Can I see recommendation performance?').text).toMatch(/impressions, clicks and conversion/);
   });
 
   it('gives monthly prices from getPrice', () => {
@@ -46,12 +43,12 @@ describe('chat matcher', () => {
     expect(a.text).not.toMatch(/@/);
   });
 
-  it('explains recommendations come from rules, not a trained model', () => {
-    expect(answer('how are recommendations generated').text).toMatch(/not from a trained model/);
+  it('explains personalized recommendations', () => {
+    expect(answer('can I create personalized recommendations').text).toMatch(/configurable recommendation workflows/);
   });
 
-  it('handles segments and data protection', () => {
-    expect(answer('manual vs calculated segments').text).toMatch(/manual segment/i);
+  it('handles customer understanding and data protection', () => {
+    expect(answer('how does it help me understand my customers').text).toMatch(/customer profiles/);
     expect(answer('is my customer data secure').text).toMatch(/role-based access/);
   });
 

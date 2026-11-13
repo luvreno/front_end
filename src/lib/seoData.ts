@@ -78,7 +78,7 @@ export function articleJsonLd(p: { title: string; description: string; path: str
 export const staticRoutes: Record<string, SeoInput> = {
   '/': {
     title: 'Luvreno | Customer Personalization & Recommendation Engine',
-    description: 'Manage customer profiles, organise your product catalog, build segments and configure recommendation rules, then review how recommendations perform.',
+    description: 'Help your customers discover products that genuinely match their interests. Luvreno brings customer insights, product information and recommendations together.',
     path: '/',
     jsonLd: [organizationJsonLd(), websiteJsonLd()],
   },
@@ -139,7 +139,7 @@ export function headTags(s: SeoInput): HeadTag[] {
     { tag: 'meta', attrs: { property: 'og:image', content: image } },
     { tag: 'meta', attrs: { property: 'og:image:width', content: '1200' } },
     { tag: 'meta', attrs: { property: 'og:image:height', content: '630' } },
-    { tag: 'meta', attrs: { property: 'og:image:alt', content: 'Luvreno logo with the line Show every customer the right product next' } },
+    { tag: 'meta', attrs: { property: 'og:image:alt', content: 'Luvreno logo with the line Make every customer experience more personal' } },
     { tag: 'meta', attrs: { name: 'twitter:card', content: 'summary_large_image' } },
     { tag: 'meta', attrs: { name: 'twitter:title', content: s.title } },
     { tag: 'meta', attrs: { name: 'twitter:description', content: s.description } },

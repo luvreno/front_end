@@ -26,10 +26,6 @@
 .blog-grid > li { display: flex; }
 .blog-empty { font-size: var(--fs-1); padding: 2rem 0; }
 .load-more { margin-top: var(--space-4); }
-.nl-strip { display: grid; gap: var(--space-3); align-items: center; }
-@media (min-width: 900px) { .nl-strip { grid-template-columns: 1fr 1fr; } }
-.nl-strip-title { font-size: var(--fs-4); }
-.nl-strip-form { background-color: var(--c4); color: var(--c1); border-radius: var(--r-lg); padding: 1.25rem; --focus: var(--c1); }
 
 /* ================================================================ post */
 .progress-thread { position: fixed; top: 0; left: 0; right: 0; height: 4px; z-index: 60; pointer-events: none; }

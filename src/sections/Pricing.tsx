@@ -19,7 +19,7 @@ function PlanAction({ plan }: { plan: Plan }) {
   if (price.isContact) {
     return (
       <Link to="/?subject=enterprise#contact" className="btn btn-secondary btn-lg plan-btn" data-testid={`plan-${plan.id}-cta`}>
-        Contact us <span className="arrow" aria-hidden="true">→</span>
+        {pricing.contactCta} <span className="arrow" aria-hidden="true">→</span>
       </Link>
     );
   }
@@ -33,8 +33,8 @@ function PlanAction({ plan }: { plan: Plan }) {
   }
   return (
     <a href={link} className={`btn btn-lg plan-btn ${plan.highlight ? 'btn-primary' : 'btn-secondary'}`} target="_blank" rel="noopener noreferrer" data-testid={`plan-${plan.id}-cta`}>
-      Start {plan.name}, {price.long}
-      <span className="sr-only"> (sandbox checkout, opens in a new tab)</span>
+      {pricing.planCta} {plan.name} <span className="arrow" aria-hidden="true">→</span>
+      <span className="sr-only">, {price.long} (sandbox checkout, opens in a new tab)</span>
     </a>
   );
 }

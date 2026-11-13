@@ -42,7 +42,7 @@
   --space-3: 1.5rem;
   --space-4: 2rem;
   --space-5: 3rem;
-  --space-6: clamp(4rem, 3rem + 4vw, 7rem);
+  --space-6: clamp(2.5rem, 2rem + 2.5vw, 4.5rem);
 
   --r-sm: 10px;
   --r-md: 18px;
@@ -163,6 +163,10 @@ section[id], [data-section] { scroll-margin-top: calc(var(--nav-h) + 12px); }
 .section-dark { background-color: var(--c1); color: var(--c4); }
 .section-green { background-color: var(--c2); color: var(--c4); }
 .section-dark, .section-green { background-image: none; }
+/* two cream sections in a row share one gap instead of stacking two paddings */
+.section-cream + .section-cream,
+.section-cream + .stitch-divider + .section-cream { padding-top: calc(var(--space-6) * 0.5); }
+.stitch-divider + .section { padding-top: calc(var(--space-6) * 0.5); }
 
 .eyebrow {
   display: inline-flex;
@@ -185,7 +189,7 @@ section[id], [data-section] { scroll-margin-top: calc(var(--nav-h) + 12px); }
 .muted { color: var(--ink-soft); }
 .on-dark .muted, .on-green .muted { color: var(--cream-soft); }
 .mono { font-family: var(--font-mono); }
-.section-head { max-width: 860px; margin-bottom: var(--space-5); }
+.section-head { max-width: 860px; margin-bottom: var(--space-4); }
 .section-head h2 { margin-bottom: 0.35em; }
 .display-accent { font-style: italic; font-weight: 500; color: var(--c3); }
 .on-green .display-accent { color: var(--c4); }

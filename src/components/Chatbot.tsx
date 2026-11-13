@@ -29,7 +29,7 @@ export default function Chatbot() {
   const { pathname } = useLocation();
 
   const close = useCallback(() => setOpen(false), []);
-  useFocusTrap(panelRef, open, close, inputRef);
+  useFocusTrap(panelRef, open, close, inputRef, fabRef);
 
   // keep the conversation for this browser session only
   useEffect(() => writeJSON(C.storageKey, msgs.slice(-40), 'session'), [msgs]);

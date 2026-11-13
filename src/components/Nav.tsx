@@ -64,6 +64,55 @@ function useScrollSpy(enabled: boolean): string | null {
   return active;
 }
 
+/**
+ * Keeps the address bar in step with the section in view on the home page (/#pricing, /#faq...),
+ * so the URL can be copied or shared from anywhere on the page. Uses replaceState, so it adds no
+ * history entries and does not trigger a router navigation or ScrollManager.
+ */
+function useHashSync(enabled: boolean, active: string | null) {
+  const scrolled = useRef(false);
+  useEffect(() => {
+    if (!enabled) return;
+    scrolled.current = false;
+    const onScroll = () => (scrolled.current = true);
+    window.addEventListener('scroll', onScroll, { passive: true, once: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, [enabled]);
+
+  useEffect(() => {
+    if (!enabled) return;
+    const write = (hash: string) => {
+      if (hash === location.hash) return;
+      try {
+        history.replaceState(history.state, '', `${location.pathname}${location.search}${hash}`);
+      } catch {
+        /* Safari rate-limits replaceState; the URL simply stays as it was */
+      }
+    };
+    if (active) {
+      write(`#${active}`);
+      return;
+    }
+    // Between tracked sections keep the last hash; back above the first one (hero, intro) drop it.
+    let raf = 0;
+    const check = () => {
+      raf = 0;
+      if (!scrolled.current) return; // first paint of a /#section link: ScrollManager has not scrolled yet
+      const first = document.getElementById(navItems[0].id);
+      if (first && first.getBoundingClientRect().top > window.innerHeight * 0.5) write('');
+    };
+    const onScroll = () => {
+      if (!raf) raf = requestAnimationFrame(check);
+    };
+    check();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+      cancelAnimationFrame(raf);
+    };
+  }, [enabled, active]);
+}
+
 export function TopStrip() {
   const { consent } = useConsent();
   const [hidden, setHidden] = useState(false);
@@ -102,8 +151,10 @@ export function Nav() {
   const { pathname } = useLocation();
   const isHome = pathname === '/';
   const spy = useScrollSpy(isHome);
+  useHashSync(isHome, spy);
   const [open, setOpen] = useState(false);
   const close = useCallback(() => setOpen(false), []);
+  const menuBtn = useRef<HTMLButtonElement>(null);
 
   // close the menu on route change
   useEffect(() => {
@@ -145,6 +196,7 @@ export function Nav() {
           {navCta.label}
         </Link>
         <button
+          ref={menuBtn}
           type="button"
           className="menu-btn"
           aria-expanded={open}
@@ -155,14 +207,14 @@ export function Nav() {
           {open ? 'Close' : 'Menu'}
         </button>
       </div>
-      <MobileMenu open={open} onClose={close} activeId={activeId} />
+      <MobileMenu open={open} onClose={close} activeId={activeId} opener={menuBtn} />
     </header>
   );
 }
 
-function MobileMenu({ open, onClose, activeId }: { open: boolean; onClose: () => void; activeId: string | null }) {
+function MobileMenu({ open, onClose, activeId, opener }: { open: boolean; onClose: () => void; activeId: string | null; opener: React.RefObject<HTMLButtonElement | null> }) {
   const ref = useRef<HTMLDivElement>(null);
-  useFocusTrap(ref, open, onClose);
+  useFocusTrap(ref, open, onClose, undefined, opener);
   useScrollLock(open);
   return (
     <div

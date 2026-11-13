@@ -1,12 +1,11 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
-import { blogCopy, newsletter } from '../content';
+import { blogCopy } from '../content';
 import { posts, categories, filterPosts, formatDate, categoryArt, type PostMeta } from '../lib/blog';
 import { Seo } from '../components/Seo';
 import { staticRoutes } from '../lib/seoData.ts';
 import { HangTag } from '../components/Motion';
 import { ProductArt } from '../illustrations/Products';
-import { NewsletterForm } from '../components/Newsletter';
 import { Icon } from '../components/Icons';
 import '../styles/blog.css';
 
@@ -112,16 +111,6 @@ export default function Blog() {
               <button type="button" className="btn btn-secondary" onClick={() => setShown((s) => s + blogCopy.pageSize)} data-testid="load-more">{blogCopy.loadMore}</button>
             </div>
           )}
-        </div>
-      </section>
-
-      <section className="section section-dark on-dark blog-newsletter" aria-labelledby="nl-strip-title">
-        <div className="container nl-strip">
-          <div>
-            <h2 id="nl-strip-title" className="nl-strip-title">{newsletter.title}</h2>
-            <p>{newsletter.text}</p>
-          </div>
-          <div className="nl-strip-form"><NewsletterForm idPrefix="blog-nl" /></div>
         </div>
       </section>
     </>

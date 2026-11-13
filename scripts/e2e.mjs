@@ -21,7 +21,19 @@ const servers = [
   spawn(process.execPath, [vite, 'preview', '--outDir', 'dist-e2e', '--host', '127.0.0.1', '--port', '4280', '--strictPort'], { cwd: root, stdio: ['ignore', 'ignore', 'inherit'] }),
   spawn(process.execPath, [vite, 'preview', '--host', '127.0.0.1', '--port', '4281', '--strictPort'], { cwd: root, stdio: ['ignore', 'ignore', 'inherit'] }),
 ];
-const stop = () => servers.forEach((s) => s.kill());
+let stopping = false;
+let serverDied = false;
+servers.forEach((s, i) =>
+  s.on('exit', (c, sig) => {
+    if (stopping) return;
+    serverDied = true;
+    console.error(`e2e: preview server ${i ? '4281 (dist)' : '4280 (dist-e2e)'} exited during the run (code ${c}, signal ${sig}). Later failures are not site bugs.`);
+  }),
+);
+const stop = () => {
+  stopping = true;
+  servers.forEach((s) => s.kill());
+};
 process.on('SIGINT', () => { stop(); process.exit(130); });
 
 async function waitFor(url) {
@@ -46,4 +58,4 @@ try {
 } finally {
   stop();
 }
-process.exit(code);
+process.exit(serverDied && !code ? 1 : code);

@@ -9,10 +9,17 @@ export const focusables = (root: HTMLElement) =>
   );
 
 /**
- * Traps Tab focus inside `ref` while active, closes on Escape, and restores focus
- * to the previously focused element when deactivated.
+ * Traps Tab focus inside `ref` while active, closes on Escape, and restores focus when deactivated:
+ * to `returnFocus` (the opener) if given, otherwise to the previously focused element.
+ * Pass the opener: Safari does not focus buttons on click, so "previously focused" is unreliable there.
  */
-export function useFocusTrap(ref: RefObject<HTMLElement | null>, active: boolean, onEscape?: () => void, initialFocus?: RefObject<HTMLElement | null>) {
+export function useFocusTrap(
+  ref: RefObject<HTMLElement | null>,
+  active: boolean,
+  onEscape?: () => void,
+  initialFocus?: RefObject<HTMLElement | null>,
+  returnFocus?: RefObject<HTMLElement | null>,
+) {
   const escRef = useRef(onEscape);
   useEffect(() => {
     escRef.current = onEscape;
@@ -22,7 +29,7 @@ export function useFocusTrap(ref: RefObject<HTMLElement | null>, active: boolean
     if (!active) return;
     const root = ref.current;
     if (!root) return;
-    const previous = document.activeElement as HTMLElement | null;
+    const previous = (returnFocus?.current ?? document.activeElement) as HTMLElement | null;
     const t = window.setTimeout(() => {
       const target = initialFocus?.current || focusables(root)[0] || root;
       target.focus({ preventScroll: true });
@@ -57,7 +64,7 @@ export function useFocusTrap(ref: RefObject<HTMLElement | null>, active: boolean
       document.removeEventListener('keydown', onKey, true);
       if (previous && typeof previous.focus === 'function' && document.contains(previous)) previous.focus({ preventScroll: true });
     };
-  }, [active, ref, initialFocus]);
+  }, [active, ref, initialFocus, returnFocus]);
 }
 
 let locks = 0;

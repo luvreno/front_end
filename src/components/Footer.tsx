@@ -1,15 +1,14 @@
 import { useRef } from 'react';
 import { Link } from 'react-router-dom';
-import { footer, newsletter, dashboardUrl, socialLinks, citationLinks, realLinks, company, isPlaceholder } from '../content';
+import { footer, newsletter, socialLinks, citationLinks, realLinks, company, isPlaceholder } from '../content';
 import { Logo } from './Logo';
 import { Icon } from './Icons';
+import { BrandIcon, brandFor } from './BrandIcons';
 import { NewsletterForm } from './Newsletter';
-import { useConsent } from './ConsentContext';
 import { useGsapContext } from '../lib/gsap';
 import { useReducedMotion } from '../lib/motion';
 
 export function Footer() {
-  const { openDialog } = useConsent();
   const wordRef = useRef<HTMLDivElement>(null);
   const reduced = useReducedMotion();
   const social = realLinks(socialLinks);
@@ -52,21 +51,9 @@ export function Footer() {
           <ul className="footer-links">
             {footer.links.map((l) => (
               <li key={l.label}>
-                {l.external ? (
-                  <a href={dashboardUrl} target="_blank" rel="noopener noreferrer">
-                    {l.label} <Icon name="external" size={15} />
-                    <span className="sr-only"> (opens in a new tab)</span>
-                  </a>
-                ) : l.plain ? (
-                  <a href={l.to}>{l.label}</a>
-                ) : (
-                  <Link to={l.to}>{l.label}</Link>
-                )}
+                <Link to={l.to}>{l.label}</Link>
               </li>
             ))}
-            <li>
-              <button type="button" className="footer-btn" onClick={openDialog} data-testid="cookie-prefs">Cookie preferences</button>
-            </li>
           </ul>
         </nav>
 
@@ -75,13 +62,35 @@ export function Footer() {
             {social.length > 0 && (
               <div>
                 <p className="mono footer-ext-title">Social</p>
-                <ul>{social.map((l) => <li key={l.url}><a href={l.url} target="_blank" rel="noopener noreferrer">{l.label}</a></li>)}</ul>
+                <ul className="footer-ext-list">{social.map((l) => {
+                  const b = brandFor(l.label);
+                  return (
+                    <li key={l.url}>
+                      <a href={l.url} className="footer-ext-link" target="_blank" rel="noopener noreferrer">
+                        {b && <BrandIcon name={b} />}
+                        <span>{l.label}</span>
+                        <span className="sr-only"> (opens in a new tab)</span>
+                      </a>
+                    </li>
+                  );
+                })}</ul>
               </div>
             )}
             {citations.length > 0 && (
               <div>
                 <p className="mono footer-ext-title">Listed on</p>
-                <ul>{citations.map((l) => <li key={l.url}><a href={l.url} target="_blank" rel="noopener noreferrer">{l.label}</a></li>)}</ul>
+                <ul className="footer-ext-list">{citations.map((l) => {
+                  const b = brandFor(l.label);
+                  return (
+                    <li key={l.url}>
+                      <a href={l.url} className="footer-ext-link" target="_blank" rel="noopener noreferrer">
+                        {b && <BrandIcon name={b} />}
+                        <span>{l.label}</span>
+                        <span className="sr-only"> (opens in a new tab)</span>
+                      </a>
+                    </li>
+                  );
+                })}</ul>
               </div>
             )}
           </div>
@@ -89,13 +98,16 @@ export function Footer() {
 
         <div className="footer-contact">
           <p className="mono footer-ext-title">Company</p>
-          <p>{company.legalName}</p>
+          <p>{company.legalName} · {company.legalNameUsa}</p>
           <p>
             {isPlaceholder(company.email) ? company.email : <a href={`mailto:${company.email}`}>{company.email}</a>}
             {' · '}
             {isPlaceholder(company.phone) ? company.phone : <a href={`tel:${company.phone.replace(/[^+\d]/g, '')}`}>{company.phone}</a>}
+            {' · '}
+            {isPlaceholder(company.phoneUsa) ? company.phoneUsa : <a href={`tel:${company.phoneUsa.replace(/[^+\d]/g, '')}`}>{company.phoneUsa}</a>}
           </p>
-          <p>{company.address}</p>
+          <p>Sri Lanka: {company.address}</p>
+          <p>USA: {company.addressUsa}</p>
         </div>
 
         <div className="footer-bottom">

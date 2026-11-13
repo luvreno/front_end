@@ -1,13 +1,18 @@
-// Generates the favicon set, logo files and the 1200x630 Open Graph image from the logo.
+// Generates the favicon set, app icons, logo files and the 1200x630 Open Graph image from the brand artwork:
+//   public/favicon.svg               the square mark (edited by hand, never overwritten here)
+//   src/assets/graphics/logo*.svg    the wordmark, for light and dark backgrounds
 // Output goes to public/ so Vite copies it to dist/.
 import fs from 'node:fs';
 import path from 'node:path';
 import sharp from 'sharp';
 import opentype from 'opentype.js';
-import { markSvg, MARK_PATHS, COLORS } from '../src/lib/brand.ts';
+import { COLORS } from '../src/lib/brand.ts';
 
 const root = path.resolve(import.meta.dirname, '..');
 const pub = path.join(root, 'public');
+const gfx = path.join(root, 'src', 'assets', 'graphics');
+const markSrc = fs.readFileSync(path.join(pub, 'favicon.svg'));
+const logoSrc = fs.readFileSync(path.join(gfx, 'logo.svg'));
 const fontDir = (pkg) => path.join(root, 'node_modules', '@fontsource', pkg, 'files');
 const loadFont = (pkg, file) => {
   const b = fs.readFileSync(path.join(fontDir(pkg), file));
@@ -42,7 +47,18 @@ const textPath = (font, text, x, y, size, fill) =>
 const width = (font, text, size) => font.getAdvanceWidth(text, size);
 
 const write = (name, data) => fs.writeFileSync(path.join(pub, name), data);
-const png = (svg, size) => sharp(Buffer.from(svg), { density: 300 }).resize(size, size).png({ compressionLevel: 9 }).toBuffer();
+/** The mark centred on a square canvas, optionally on a solid background, padded by a share of the size. */
+async function markPng(size, { bg = null, pad = 0.06 } = {}) {
+  const inner = Math.round(size * (1 - pad * 2));
+  const clear = { r: 0, g: 0, b: 0, alpha: 0 };
+  // favicon.svg is used exactly as designed; only the raster icons trim its spare canvas so small sizes stay legible
+  const trimmed = await sharp(markSrc, { density: 600 }).trim().png().toBuffer();
+  const mark = await sharp(trimmed).resize(inner, inner, { fit: 'contain', background: clear }).png().toBuffer();
+  return sharp({ create: { width: size, height: size, channels: 4, background: bg ?? clear } })
+    .composite([{ input: mark, gravity: 'center' }])
+    .png({ compressionLevel: 9 })
+    .toBuffer();
+}
 
 /** ICO container with embedded PNG images (supported by all current browsers). */
 function ico(pngs) {
@@ -67,50 +83,36 @@ function ico(pngs) {
   return Buffer.concat([header, dir, ...pngs.map((p) => p.buf)]);
 }
 
-function logoSvg(variant) {
-  const ink = variant === 'dark' ? COLORS.c4 : COLORS.c1;
-  const hole = variant === 'dark' ? COLORS.c1 : COLORS.c4;
-  const mark = markSvg({ hole }).replace(/^<svg[^>]*>/, '').replace(/<\/svg>$/, '');
-  const word = textPath(fraunces, 'Luvreno', 76, 46, 40, ink);
-  const w = Math.ceil(76 + width(fraunces, 'Luvreno', 40) + 4);
-  return `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="64" viewBox="0 0 ${w} 64" role="img" aria-label="Luvreno">${mark}${word}</svg>`;
-}
-
+/** Text layer of the Open Graph image (the logo is composited on top in main). */
 function ogSvg() {
   const W = 1200, H = 630;
-  const mark = `<g transform="translate(96 96) scale(2.4)">${markSvg({ hole: COLORS.c4 }).replace(/^<svg[^>]*>/, '').replace(/<\/svg>$/, '')}</g>`;
-  const word = textPath(fraunces, 'Luvreno', 270, 210, 96, COLORS.c1);
-  const l1 = textPath(fraunces, 'Show every customer the', 96, 360, 64, COLORS.c1);
-  const right = 'right';
-  const l2a = textPath(frauncesItalic, right, 96, 440, 64, COLORS.c3);
-  const l2b = textPath(fraunces, 'product next.', 96 + width(frauncesItalic, right, 64) + 18, 440, 64, COLORS.c1);
+  const l1 = textPath(fraunces, 'Make every customer experience', 96, 330, 62, COLORS.c1);
+  const more = 'more ';
+  const l2a = textPath(fraunces, more, 96, 410, 62, COLORS.c1);
+  const l2b = textPath(frauncesItalic, 'personal.', 96 + width(fraunces, more, 62), 410, 62, COLORS.c3);
+  const stitch = `<path d="M96 478 H 1104" stroke="${COLORS.c3}" stroke-width="3" stroke-dasharray="12 9"/>`;
   const eyebrow = textPath(mono, 'AI CUSTOMER PERSONALIZATION & RECOMMENDATION ENGINE', 96, 540, 22, COLORS.c1);
   const url = textPath(figtree, 'luvreno.net', W - 96 - width(figtree, 'luvreno.net', 26), 540, 26, COLORS.c1);
-  // the thread with a hang tag
-  const thread = `<path d="M760 120 C 900 60, 1040 170, 1110 110" fill="none" stroke="${COLORS.c3}" stroke-width="4" stroke-dasharray="14 10" stroke-linecap="round"/>`;
-  const tag = `<g transform="translate(1040 150) rotate(-10)"><path d="M18 0h96a12 12 0 0 1 12 12v24a12 12 0 0 1-12 12H18L0 24z" fill="${COLORS.c2}"/><circle cx="20" cy="24" r="5" fill="${COLORS.c4}"/>${textPath(mono, 'For you', 34, 31, 20, COLORS.c4)}</g>`;
-  const stitch = `<path d="M96 488 H 1104" stroke="${COLORS.c3}" stroke-width="3" stroke-dasharray="12 9"/>`;
-  return `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}"><rect width="${W}" height="${H}" fill="${COLORS.c4}"/>${thread}${tag}${mark}${word}${l1}${l2a}${l2b}${stitch}${eyebrow}${url}</svg>`;
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}"><rect width="${W}" height="${H}" fill="${COLORS.c4}"/>${l1}${l2a}${l2b}${stitch}${eyebrow}${url}</svg>`;
 }
 
 async function main() {
   fs.mkdirSync(pub, { recursive: true });
 
-  // favicon.svg: transparent background, works on light and dark tabs
-  write('favicon.svg', markSvg({ hole: COLORS.c4 }));
-  write('logo-light.svg', logoSvg('light'));
-  write('logo-dark.svg', logoSvg('dark'));
-  write('logo-mark.svg', markSvg({ hole: COLORS.c4 }));
+  // logo files for other sites and documents (the app imports the same artwork from src/assets)
+  write('logo-light.svg', logoSrc);
+  write('logo-dark.svg', fs.readFileSync(path.join(gfx, 'logo-on-dark.svg')));
+  write('logo-mark.svg', markSrc);
 
-  const onCream = (pad) => markSvg({ size: 512, bg: COLORS.c4, padding: pad });
+  const cream = COLORS.c4;
   const icoPngs = [];
-  for (const s of [16, 32, 48]) icoPngs.push({ size: s, buf: await png(markSvg({ size: s, padding: 2 }), s) });
+  for (const s of [16, 32, 48]) icoPngs.push({ size: s, buf: await markPng(s, { pad: 0.02 }) });
   write('favicon.ico', ico(icoPngs));
-  write('apple-touch-icon.png', await png(onCream(8), 180));
-  write('icon-192.png', await png(onCream(6), 192));
-  write('icon-512.png', await png(onCream(6), 512));
+  write('apple-touch-icon.png', await markPng(180, { bg: cream, pad: 0.12 }));
+  write('icon-192.png', await markPng(192, { bg: cream, pad: 0.1 }));
+  write('icon-512.png', await markPng(512, { bg: cream, pad: 0.1 }));
   // maskable: content inside the 80% safe zone
-  write('icon-maskable-512.png', await png(onCream(18), 512));
+  write('icon-maskable-512.png', await markPng(512, { bg: cream, pad: 0.2 }));
 
   const manifest = {
     name: 'Luvreno',
@@ -129,7 +131,12 @@ async function main() {
   };
   write('site.webmanifest', JSON.stringify(manifest, null, 2) + '\n');
 
-  await sharp(Buffer.from(ogSvg()), { density: 144 }).resize(1200, 630).png({ compressionLevel: 9 }).toFile(path.join(pub, 'og-image.png'));
+  const ogLogo = await sharp(logoSrc, { density: 300 }).resize({ width: 560 }).png().toBuffer();
+  await sharp(Buffer.from(ogSvg()), { density: 144 })
+    .resize(1200, 630)
+    .composite([{ input: ogLogo, left: 96, top: 120 }])
+    .png({ compressionLevel: 9 })
+    .toFile(path.join(pub, 'og-image.png'));
 
   const expected = ['favicon.svg', 'favicon.ico', 'apple-touch-icon.png', 'icon-192.png', 'icon-512.png', 'icon-maskable-512.png', 'site.webmanifest', 'og-image.png', 'logo-light.svg', 'logo-dark.svg'];
   const missing = expected.filter((f) => !fs.existsSync(path.join(pub, f)) || fs.statSync(path.join(pub, f)).size === 0);
@@ -142,7 +149,6 @@ async function main() {
     console.error('gen-icons: og-image is not 1200x630');
     process.exit(1);
   }
-  void MARK_PATHS;
   console.log(`gen-icons: ${expected.length} files written and verified`);
 }
 
