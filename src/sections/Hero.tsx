@@ -3,7 +3,9 @@ import { Link } from 'react-router-dom';
 import { hero, marquee } from '../content';
 import { useReducedMotion } from '../lib/motion';
 import { Icon } from '../components/Icons';
-import heroArtUrl from '../assets/graphics/hero.svg';
+import heroAnim800 from '../assets/graphics/hero-anim-800.webp';
+import heroAnim1000 from '../assets/graphics/hero-anim-1000.webp';
+import heroStill from '../assets/graphics/hero-still.webp';
 
 export function Hero() {
   const words = hero.cycleWords;
@@ -53,17 +55,25 @@ export function Hero() {
   );
 }
 
+/**
+ * Animated hero (client artwork, converted from GIF to animated WebP: about a tenth of the size).
+ * Visitors who prefer reduced motion get a still of the final frame instead.
+ */
 function HeroArt() {
   return (
     <figure className="hero-art">
-      <img
-        src={heroArtUrl}
-        width={900}
-        height={675}
-        alt={hero.artAlt}
-        fetchPriority="high"
-        decoding="async"
-      />
+      <picture>
+        <source media="(prefers-reduced-motion: reduce)" srcSet={heroStill} />
+        <img
+          src={heroAnim1000}
+          srcSet={`${heroAnim800} 800w, ${heroAnim1000} 1000w`}
+          sizes="(min-width: 1024px) 480px, 92vw"
+          width={1000}
+          height={750}
+          alt={hero.artAlt}
+          decoding="async"
+        />
+      </picture>
     </figure>
   );
 }
