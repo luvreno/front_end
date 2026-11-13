@@ -95,13 +95,17 @@ test('hero button reaches /product', async ({ page }) => {
   await page.goto('/');
   await page.getByTestId('hero-cta').click();
   await expect(page).toHaveURL(/\/product$/);
-  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Luvreno Platform');
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Make every recommendation feel more relevant.');
+  await expect(page.getByText('L.VIA by Luvreno', { exact: true })).toBeVisible();
   expect(await page.evaluate(() => window.scrollY)).toBe(0);
 });
 
-test('/product has two working buttons', async ({ page }) => {
+test('/product presents L.VIA, its roadmap and the live portal', async ({ page }) => {
   await prepare(page);
   await page.goto('/product');
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Make every recommendation feel more relevant.');
+  await expect(page.getByRole('heading', { name: /thoughtful path from rules to learned recommendations/i })).toBeVisible();
+  await expect(page.getByText(/GPU-trained models and Triton serving/i)).toBeVisible();
   const open = page.getByTestId('open-dashboard');
   await expect(open).toHaveAttribute('href', /^https:\/\/portal\.luvreno\.net\/?$/);
   await expect(open).toHaveAttribute('target', '_blank');
@@ -109,6 +113,17 @@ test('/product has two working buttons', async ({ page }) => {
   await page.getByTestId('back-home').click();
   await expect(page).toHaveURL(/\/$/);
   await expect(page.getByTestId('hero-cta')).toBeVisible();
+});
+
+test('mobile L.VIA navigation CTA opens /product', async ({ page }) => {
+  test.skip(isDesktop(page), 'mobile menu is shown under 1024px');
+  await prepare(page);
+  await page.goto('/');
+  await page.getByTestId('menu-btn').click();
+  const cta = page.locator('.mobile-cta');
+  await expect(cta).toHaveAttribute('href', '/product');
+  await cta.click();
+  await expect(page).toHaveURL(/\/product$/);
 });
 
 test('mobile menu traps focus, closes with Esc and restores focus', async ({ page }) => {
@@ -151,6 +166,7 @@ test('nav highlight follows scroll on the home page', async ({ page }) => {
   await expect(page.locator('.nav-index a[data-nav="journal"]')).toHaveAttribute('aria-current', 'page');
   await page.goto('/product');
   await expect(page.getByTestId('nav-cta')).toHaveAttribute('aria-current', 'page');
+  await expect(page.getByTestId('nav-cta')).toHaveAttribute('href', '/product');
 });
 
 test('/blog to /#pricing scrolls to pricing', async ({ page }) => {

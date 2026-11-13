@@ -86,6 +86,21 @@
 .arch-caption { font-size: var(--fs-mono); margin: 0; }
 .arch-note { max-width: 900px; margin: 1.5rem auto 0; }
 
+/* ================================================================ roadmap */
+.roadmap-head { max-width: 900px; }
+.roadmap-intro { max-width: 72ch; color: var(--cream-soft); }
+.roadmap-stages { list-style: none; margin: 0; padding: 0; display: grid; gap: 1.25rem; }
+@media (min-width: 720px) { .roadmap-stages { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (min-width: 1120px) { .roadmap-stages { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1rem; } }
+.roadmap-stage { position: relative; display: flex; flex-direction: column; align-items: flex-start; min-height: 100%; padding: 1.35rem; border: 1px solid var(--line-light); border-radius: var(--r-lg); background: var(--tint-light); }
+.roadmap-step { display: grid; place-items: center; width: 2.25rem; height: 2.25rem; margin-bottom: 1rem; border: 1px solid var(--c3); border-radius: 50%; color: var(--c4); }
+.roadmap-label { margin: 0 0 0.45rem; color: var(--cream-soft); font-family: var(--font-mono); font-size: var(--fs-mono); letter-spacing: 0.05em; text-transform: uppercase; }
+.roadmap-stage h3 { margin-bottom: 0.55rem; font-size: var(--fs-2); }
+.roadmap-stage > p:not(.roadmap-label) { color: var(--cream-soft); }
+.roadmap-tags { list-style: none; margin: auto 0 0; padding: 0.5rem 0 0; display: flex; flex-wrap: wrap; gap: 0.4rem; }
+.roadmap-tags li { padding: 0.25rem 0.55rem; border: 1px dashed rgba(236, 219, 186, 0.45); border-radius: var(--r-pill); color: var(--c4); font-family: var(--font-mono); font-size: 0.8125rem; line-height: 1.4; }
+.roadmap-note { margin: 1.5rem 0 0; padding-left: 1rem; border-left: 3px solid var(--c3); color: var(--cream-soft); }
+
 /* ================================================================ foundation (muted, separated) */
 .foundation { background-color: var(--c4); padding-top: 0; }
 .foundation-box { border: 1.5px dashed var(--line-strong); border-radius: var(--r-xl); padding: clamp(1.25rem, 3vw, 2.5rem); background-color: var(--tint); }
