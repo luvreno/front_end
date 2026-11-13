@@ -41,7 +41,7 @@ export function Hero() {
           <p className="lead hero-text">{hero.text}</p>
           <div className="btn-row">
             <Link to={hero.cta.to} className="btn btn-primary btn-lg" data-testid="hero-cta">
-              {hero.cta.label} <span className="arrow" aria-hidden="true">→</span>
+              {hero.cta.label}<span className="sr-only">{hero.cta.srHint}</span> <span className="arrow" aria-hidden="true">→</span>
             </Link>
             <Link to={hero.secondaryCta.to} className="btn btn-secondary btn-lg" data-testid="hero-secondary-cta">
               {hero.secondaryCta.label}

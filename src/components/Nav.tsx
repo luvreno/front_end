@@ -193,7 +193,7 @@ export function Nav() {
         </nav>
         <Link to={navCta.to} className={`tag-cta${ctaActive ? ' is-active' : ''}`} aria-current={ctaActive ? 'page' : undefined} data-testid="nav-cta">
           <span className="tag-cta-hole" aria-hidden="true" />
-          {navCta.label}
+          {navCta.label}<span className="sr-only">{navCta.srHint}</span>
         </Link>
         <button
           ref={menuBtn}
@@ -250,7 +250,7 @@ function MobileMenu({ open, onClose, activeId, opener }: { open: boolean; onClos
           ))}
         </ol>
         <Link to={navCta.to} onClick={onClose} className="btn btn-primary btn-lg mobile-cta">
-          {navCta.label} <span className="arrow" aria-hidden="true">→</span>
+          {navCta.label}<span className="sr-only">{navCta.srHint}</span> <span className="arrow" aria-hidden="true">→</span>
         </Link>
       </nav>
     </div>

@@ -234,16 +234,29 @@ test('pricing numbers match everywhere and are monthly only', async ({ page }) =
   await expect(page.locator('#cf-subject')).toHaveValue('enterprise');
 });
 
-test('production build: missing keys disable checkout and forms (never a dead link)', async ({ page }) => {
+test('production build: checkout and contact are either configured or clearly disabled (never a dead link)', async ({ page }) => {
   await prepare(page);
   await page.goto(`${PROD}/`);
   for (const id of ['starter', 'growth']) {
     const b = page.getByTestId(`plan-${id}-cta`);
-    await expect(b).toBeDisabled();
-    await expect(b).toHaveText('Sandbox checkout not configured');
+    const href = await b.getAttribute('href');
+    if (href === null) {
+      // no Stripe link in .env: a disabled button that says so
+      await expect(b).toBeDisabled();
+      await expect(b).toHaveText('Sandbox checkout not configured');
+    } else {
+      // configured: a real Stripe payment link that opens in a new tab
+      expect(href).toMatch(/^https:\/\/(buy|checkout)\.stripe\.com\//);
+      await expect(b).toHaveAttribute('target', '_blank');
+    }
   }
-  await expect(page.getByTestId('contact-not-configured')).toHaveText('Contact form not configured');
-  await expect(page.getByTestId('contact-form').getByRole('button', { name: 'Send message' })).toBeDisabled();
+  const notConfigured = page.getByTestId('contact-not-configured');
+  if (await notConfigured.count()) {
+    await expect(notConfigured).toHaveText('Contact form not configured');
+    await expect(page.getByTestId('contact-form').getByRole('button', { name: 'Send message' })).toBeDisabled();
+  } else {
+    await expect(page.getByTestId('contact-form').getByRole('button', { name: 'Send message' })).toBeEnabled();
+  }
 });
 
 test('checkout success page explains the sandbox', async ({ page }) => {

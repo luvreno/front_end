@@ -85,7 +85,9 @@ export const navItems: NavItem[] = [
   { num: '05', id: 'faq', label: 'FAQ' },
   { num: '06', id: 'contact', label: 'Contact' },
 ];
-export const navCta = { label: 'Get Started', to: routes.product };
+/** Every button that opens the product page uses this label (client brief). */
+export const productCta = { label: 'L.VIA', srHint: ', explore the platform', to: routes.product };
+export const navCta = productCta;
 export const topStrip = { text: 'The weekly edit: new from the journal', to: routes.blog, storageKey: 'lv-strip-dismissed-v1' };
 
 /* ------------------------------------------------------------------ hero */
@@ -98,7 +100,7 @@ export const hero = {
   titleAfter: '',
   cycleMs: 2600,
   text: 'Help your customers discover products that genuinely match their interests. Luvreno brings customer insights, product information and recommendation management together, helping retail and e-commerce businesses create more relevant shopping experiences.',
-  cta: { label: 'Explore the Platform', to: routes.product },
+  cta: productCta,
   secondaryCta: { label: 'Discover What We Do', to: '/#about' },
   artAlt: 'A customer profile at the centre, linked to a dress, a pair of sneakers and a laptop recommended for them',
 };

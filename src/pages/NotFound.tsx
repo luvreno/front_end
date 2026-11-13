@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { productCta } from '../content';
 import { Seo } from '../components/Seo';
 import { staticRoutes } from '../lib/seoData.ts';
 import { HangTag } from '../components/Motion';
@@ -19,7 +20,7 @@ export default function NotFound() {
           <p className="lead muted">The link may be old or mistyped. These pages are a good place to continue.</p>
           <div className="btn-row">
             <Link to="/" className="btn btn-primary">Back to Home</Link>
-            <Link to="/product" className="btn btn-secondary">See the product</Link>
+            <Link to={productCta.to} className="btn btn-secondary">{productCta.label}<span className="sr-only">{productCta.srHint}</span></Link>
             <Link to="/blog" className="btn btn-secondary">Read the journal</Link>
           </div>
         </div>

@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
+import { productCta } from '../content';
 import { getPost, relatedPosts, neighbours, formatDate, categoryArt } from '../lib/blog';
 import { getPostBody } from '../lib/blogBodies';
 import { postSeo } from '../lib/seoData.ts';
@@ -160,7 +161,7 @@ export default function Post() {
       <section className="section section-green on-green closing" aria-labelledby="post-cta">
         <div className="container closing-inner">
           <h2 id="post-cta" className="closing-title">Put these ideas on your own shelves.</h2>
-          <Link to="/product" className="btn btn-secondary btn-lg">Explore the Platform <span className="arrow" aria-hidden="true">→</span></Link>
+          <Link to={productCta.to} className="btn btn-secondary btn-lg">{productCta.label}<span className="sr-only">{productCta.srHint}</span> <span className="arrow" aria-hidden="true">→</span></Link>
         </div>
       </section>
     </>
