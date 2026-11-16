@@ -1,13 +1,11 @@
-import { useEffect, useId, useRef, useState, type KeyboardEvent, type ReactElement } from 'react';
+import { useRef, type ReactElement } from 'react';
 import { Link } from 'react-router-dom';
-import { AnimatePresence, m } from 'framer-motion';
-import { productPage as P, dashboardUrl, pricing } from '../content';
-import { getPrice } from '../lib/pricing';
+import { productPage as P, dashboardUrl } from '../content';
 import { Seo } from '../components/Seo';
 import { staticRoutes } from '../lib/seoData.ts';
-import { HangTag, Reveal, Thread } from '../components/Motion';
+import { Reveal, Thread } from '../components/Motion';
 import { Icon, type IconName } from '../components/Icons';
-import { DashboardMock, MockCatalog, MockChart, MockCustomers, MockRule, MockSegments } from '../sections/Mockups';
+import { DashboardMock } from '../sections/Mockups';
 import { useReducedMotion } from '../lib/motion';
 import { useGsapContext } from '../lib/gsap';
 import '../styles/product.css';
@@ -130,91 +128,6 @@ function Modules() {
     </section>
   );
 }
-
-const tourPanels: Record<string, () => ReactElement> = {
-  customers: MockCustomers,
-  catalog: MockCatalog,
-  segments: MockSegments,
-  rules: MockRule,
-  reports: MockChart,
-};
-
-function Tour() {
-  const [active, setActive] = useState(0);
-  const [paused, setPaused] = useState(false);
-  const reduced = useReducedMotion();
-  const tabs = useRef<(HTMLButtonElement | null)[]>([]);
-  const uid = useId();
-  const n = P.tourTabs.length;
-
-  useEffect(() => {
-    if (paused || reduced) return;
-    const t = window.setInterval(() => {
-      if (document.visibilityState === 'visible') setActive((a) => (a + 1) % n);
-    }, 4500);
-    return () => window.clearInterval(t);
-  }, [paused, reduced, n]);
-
-  const onKey = (e: KeyboardEvent<HTMLButtonElement>) => {
-    let next: number;
-    if (e.key === 'ArrowRight') next = (active + 1) % n;
-    else if (e.key === 'ArrowLeft') next = (active - 1 + n) % n;
-    else if (e.key === 'Home') next = 0;
-    else if (e.key === 'End') next = n - 1;
-    else return;
-    e.preventDefault();
-    setActive(next);
-    tabs.current[next]?.focus();
-  };
-  const tab = P.tourTabs[active];
-  const Panel = tourPanels[tab.id];
-
-  return (
-    <section id="tour" className="section section-green on-green tour" aria-labelledby="tour-title">
-      <div className="container" onMouseEnter={() => setPaused(true)} onMouseLeave={() => setPaused(false)} onFocus={() => setPaused(true)} onBlur={() => setPaused(false)}>
-        <div className="section-head row-head">
-          <div>
-            <p className="eyebrow">Interactive tour</p>
-            <h2 id="tour-title">A quick walk through the dashboard.</h2>
-          </div>
-          <span className="label-illustrative">{P.mockLabel}</span>
-        </div>
-        <div role="tablist" aria-label="Dashboard areas" className="tablist tour-tabs">
-          {P.tourTabs.map((t, i) => (
-            <button
-              key={t.id}
-              ref={(el) => {
-                tabs.current[i] = el;
-              }}
-              type="button"
-              role="tab"
-              id={`${uid}-t-${t.id}`}
-              aria-selected={active === i}
-              aria-controls={`${uid}-panel`}
-              tabIndex={active === i ? 0 : -1}
-              className="tab tab-on-green"
-              onClick={() => setActive(i)}
-              onKeyDown={onKey}
-            >
-              {t.label}
-            </button>
-          ))}
-          <button type="button" className="tour-pause mono" onClick={() => setPaused((p) => !p)} aria-pressed={paused}>
-            {paused ? 'Auto-play paused' : 'Pause auto-play'}
-          </button>
-        </div>
-        <div id={`${uid}-panel`} role="tabpanel" aria-labelledby={`${uid}-t-${tab.id}`} className="tour-panel" tabIndex={0}>
-          <AnimatePresence mode="wait" initial={false}>
-            <m.div key={tab.id} initial={{ opacity: 0, y: reduced ? 0 : 14 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={{ duration: reduced ? 0 : 0.35 }}>
-              <Panel />
-            </m.div>
-          </AnimatePresence>
-        </div>
-      </div>
-    </section>
-  );
-}
-
 function Architecture() {
   const ref = useRef<HTMLElement>(null);
   const reduced = useReducedMotion();
@@ -256,28 +169,6 @@ function Architecture() {
   );
 }
 
-function Foundation() {
-  return (
-    <section id="foundation" className="section foundation" aria-labelledby="foundation-title">
-      <div className="container">
-        <div className="foundation-box">
-          <p className="eyebrow">Technical context</p>
-          <h2 id="foundation-title" className="foundation-title">{P.foundation.title}</h2>
-          <ul className="foundation-cards">
-            {P.foundation.cards.map((c) => (
-              <li key={c.name} className="foundation-card">
-                <h3 className="foundation-name">{c.name}</h3>
-                <p>{c.text}</p>
-              </li>
-            ))}
-          </ul>
-          <p className="foundation-disclaimer" data-testid="nvidia-disclaimer">{P.foundation.disclaimer}</p>
-        </div>
-      </div>
-    </section>
-  );
-}
-
 function Roadmap() {
   return (
     <section id="roadmap" className="section section-dark on-dark roadmap" aria-labelledby="roadmap-title">
@@ -306,76 +197,6 @@ function Roadmap() {
   );
 }
 
-function Governance() {
-  return (
-    <section id="governance" className="section section-dark on-dark governance" aria-labelledby="gov-title">
-      <div className="container">
-        <div className="section-head">
-          <p className="eyebrow">Governance</p>
-          <h2 id="gov-title">{P.governance.title}</h2>
-        </div>
-        <ul className="gov-list">
-          {P.governance.items.map((g, i) => (
-            <Reveal as="li" key={g.title} className="gov-item" delay={i * 0.08}>
-              <HangTag label={`0${i + 1}`} variant="cream" />
-              <h3 className="gov-title">{g.title}</h3>
-              <p>{g.text}</p>
-            </Reveal>
-          ))}
-        </ul>
-      </div>
-    </section>
-  );
-}
-
-function UseCases() {
-  return (
-    <section id="use-cases" className="section section-cream use-cases" aria-labelledby="uc-title">
-      <div className="container">
-        <div className="section-head">
-          <p className="eyebrow">Use cases</p>
-          <h2 id="uc-title">Where it fits.</h2>
-        </div>
-        <ul className="uc-grid">
-          {P.useCases.map((u, i) => (
-            <Reveal as="li" key={u.title} className="card liftable uc-card" delay={i * 0.08}>
-              <h3 className="uc-title">{u.title}</h3>
-              <p>{u.text}</p>
-              <Link to="/?subject=general#contact" className="text-link">Learn more<span className="sr-only"> about {u.title}</span> <span aria-hidden="true">→</span></Link>
-            </Reveal>
-          ))}
-        </ul>
-      </div>
-    </section>
-  );
-}
-
-function PlansSnapshot() {
-  return (
-    <section id="plans" className="section section-cream plans-snapshot" aria-labelledby="snap-title">
-      <div className="container">
-        <div className="snapshot card">
-          <div>
-            <p className="eyebrow">Plans</p>
-            <h2 id="snap-title" className="snap-title">Monthly plans at a glance.</h2>
-          </div>
-          <ul className="snap-list">
-            {pricing.plans.map((p) => {
-              const price = getPrice(p);
-              return (
-                <li key={p.id}>
-                  <span className="snap-name">{p.name}</span>
-                  <span className="snap-price" data-price-plan={p.id} data-price={price.long}>{price.display}{!price.isContact && <span className="price-suffix"> {price.suffix}</span>}</span>
-                </li>
-              );
-            })}
-          </ul>
-          <Link to="/#pricing" className="btn btn-secondary">Compare plans <span className="arrow" aria-hidden="true">→</span></Link>
-        </div>
-      </div>
-    </section>
-  );
-}
 
 function FinalCta() {
   return (

@@ -105,7 +105,7 @@ test('/product presents L.VIA, its roadmap and the live portal', async ({ page }
   await page.goto('/product');
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Make every recommendation feel more relevant.');
   await expect(page.getByRole('heading', { name: /thoughtful path from rules to learned recommendations/i })).toBeVisible();
-  await expect(page.getByText(/GPU-trained models and Triton serving/i)).toBeVisible();
+  await expect(page.getByText(/not part of the current live implementation/i)).toBeVisible();
   const open = page.getByTestId('open-dashboard');
   await expect(open).toHaveAttribute('href', /^https:\/\/portal\.luvreno\.net\/?$/);
   await expect(open).toHaveAttribute('target', '_blank');
