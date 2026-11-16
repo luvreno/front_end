@@ -65,6 +65,10 @@ export interface ExtLink { label: string; url: string }
 /** Add real profile URLs only. Empty strings are ignored, empty groups are hidden. */
 export const socialLinks: ExtLink[] = [
   { label: 'LinkedIn', url: 'https://www.linkedin.com/company/luvreno/' },
+  { label: 'Facebook', url: 'https://web.facebook.com/LuvrenoAI/' },
+  { label: 'X (Twitter)', url: 'https://x.com/LuvrenoAI' },
+  { label: 'YouTube', url: 'https://www.youtube.com/@Luvreno-AI' },
+  { label: 'Pinterest', url: 'https://www.pinterest.com/luvrenoAI/' },
 ];
 /** Business listings and citation sources. Real URLs only. */
 export const citationLinks: ExtLink[] = [
