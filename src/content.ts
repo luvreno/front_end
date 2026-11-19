@@ -582,9 +582,10 @@ export const testimonialsCopy = {
   empty: 'Leave your thoughts. Tell us how Luvreno is working for you.',
   /** Template placeholders for the site owner: shown only until the first real testimonial is added to content/testimonials.seed.json. */
   samples: [
-    { id: 'sample-1', name: 'Customer name', company: 'Job title, Company', rating: 5, date: '', message: 'Having customer profiles, the catalog and our recommendation rules in one place means we stopped juggling a spreadsheet for every campaign.' },
-    { id: 'sample-2', name: 'Customer name', company: 'Job title, Company', rating: 5, date: '', message: 'Related and complementary product rules were easy to set up, and I can always see why a product was suggested to a customer.' },
-    { id: 'sample-3', name: 'Customer name', company: 'Job title, Company', rating: 4, date: '', message: 'Segments made it simple to plan around customer groups. We would like more report templates, but the basics are clear.' },
+    { id: 'sample-1', name: 'Customer name', role: 'E-commerce Business Owner', rating: 5, date: '', message: 'Understanding our customers and their preferences is essential for our business. Luvreno provides a more organized way to manage customer insights and deliver relevant product recommendations. It helps us make smarter decisions and improve the overall shopping experience.' },
+    { id: 'sample-2', name: 'Customer name', role: 'Digital Marketing Manager', rating: 5, date: '', message: 'Customer segmentation and personalized recommendations are important for creating meaningful shopping experiences. Luvreno brings these capabilities together in one platform, making it easier to understand customer interests and plan more targeted marketing strategies.' },
+    { id: 'sample-3', name: 'Customer name', role: 'Retail Operations Manager', rating: 5, date: '', message: 'Managing customer information and product data across different systems can be challenging. Luvreno offers a centralized platform that simplifies these processes and gives our team better visibility into customer interactions and product performance.' },
+    { id: 'sample-4', name: 'Customer name', role: 'Product & Data Analyst', rating: 5, date: '', message: 'What stands out about Luvreno is its structured approach to customer data, recommendation management, and performance analytics. Having these insights in one place makes it easier to evaluate customer engagement and make data-informed product decisions.' },
   ],
   formTitle: 'Share your feedback',
   consent: 'I agree this may be published',
