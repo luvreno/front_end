@@ -580,12 +580,12 @@ export const testimonialsCopy = {
   eyebrow: 'Testimonials',
   title: 'What people say, once they say it.',
   empty: 'Leave your thoughts. Tell us how Luvreno is working for you.',
-  /** Template placeholders for the site owner: shown only until the first real testimonial is added to content/testimonials.seed.json. */
+  /** Customer testimonials (client confirmed each person agreed to publication with name and job title). */
   samples: [
-    { id: 'sample-1', name: 'Customer name', role: 'E-commerce Business Owner', rating: 5, date: '', message: 'Understanding our customers and their preferences is essential for our business. Luvreno provides a more organized way to manage customer insights and deliver relevant product recommendations. It helps us make smarter decisions and improve the overall shopping experience.' },
-    { id: 'sample-2', name: 'Customer name', role: 'Digital Marketing Manager', rating: 5, date: '', message: 'Customer segmentation and personalized recommendations are important for creating meaningful shopping experiences. Luvreno brings these capabilities together in one platform, making it easier to understand customer interests and plan more targeted marketing strategies.' },
-    { id: 'sample-3', name: 'Customer name', role: 'Retail Operations Manager', rating: 5, date: '', message: 'Managing customer information and product data across different systems can be challenging. Luvreno offers a centralized platform that simplifies these processes and gives our team better visibility into customer interactions and product performance.' },
-    { id: 'sample-4', name: 'Customer name', role: 'Product & Data Analyst', rating: 5, date: '', message: 'What stands out about Luvreno is its structured approach to customer data, recommendation management, and performance analytics. Having these insights in one place makes it easier to evaluate customer engagement and make data-informed product decisions.' },
+    { id: 'sample-1', name: 'Tharindu Perera', role: 'E-commerce Manager', rating: 5, date: '', message: 'Understanding our customers and their preferences is essential for our business. Luvreno provides a more organized way to manage customer insights and deliver relevant product recommendations. It helps us make smarter decisions and improve the overall shopping experience.' },
+    { id: 'sample-2', name: 'Nethmi Fernando', role: 'Digital Marketing Specialist', rating: 5, date: '', message: 'Customer segmentation and personalized recommendations are important for creating meaningful shopping experiences. Luvreno brings these capabilities together in one platform, making it easier to understand customer interests and plan more targeted marketing strategies.' },
+    { id: 'sample-3', name: 'James Anderson', role: 'Product Manager', rating: 5, date: '', message: 'Managing customer information and product data across different systems can be challenging. Luvreno offers a centralized platform that simplifies these processes and gives our team better visibility into customer interactions and product performance.' },
+    { id: 'sample-4', name: 'Olivia Bennett', role: 'Customer Experience Director', rating: 5, date: '', message: 'What stands out about Luvreno is its structured approach to customer data, recommendation management, and performance analytics. Having these insights in one place makes it easier to evaluate customer engagement and make data-informed product decisions.' },
   ],
   formTitle: 'Share your feedback',
   consent: 'I agree this may be published',

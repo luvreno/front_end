@@ -343,12 +343,12 @@ test('live demo: shopper and rule switches update the storefront', async ({ page
   await expect(demo.getByRole('link', { name: /L\.VIA/ })).toHaveAttribute('href', '/product');
 });
 
-test('testimonials: placeholder cards until real ones exist, and no submission form', async ({ page }) => {
+test('testimonials: four named cards and no submission form', async ({ page }) => {
   await prepare(page);
   await page.goto('/');
   const section = page.locator('#testimonials');
   await expect(page.getByTestId('testimonials-empty').locator('.t-card')).toHaveCount(4);
-  await expect(page.getByTestId('testimonials-empty').locator('.t-who strong')).toHaveText(['Customer name', 'Customer name', 'Customer name', 'Customer name']);
+  await expect(page.getByTestId('testimonials-empty').locator('.t-who strong')).toHaveText(['Tharindu Perera', 'Nethmi Fernando', 'James Anderson', 'Olivia Bennett']);
   await expect(section.locator('form')).toHaveCount(0);
   await expect(page.getByTestId('rating-summary')).toHaveCount(0);
 });
