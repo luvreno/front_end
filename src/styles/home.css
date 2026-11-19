@@ -316,7 +316,6 @@
 .t-who { display: flex; flex-direction: column; margin: 0; }
 .t-who .mono { font-size: var(--fs-mono); color: var(--ink-soft); }
 .t-controls { display: flex; gap: 0.5rem; }
-.t-sample-tag { position: absolute; top: 0.6rem; right: 0.9rem; padding: 0.1rem 0.6rem; border: 1px dashed var(--c1); border-radius: var(--r-pill); font-size: 0.8125rem; }
 .flip { transform: rotate(180deg); }
 .rating-field { border: 0; padding: 0; margin: 0 0 1.1rem; min-width: 0; }
 .rating-field legend { font-weight: 600; margin-bottom: 0.5rem; padding: 0; }

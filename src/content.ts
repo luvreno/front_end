@@ -580,12 +580,11 @@ export const testimonialsCopy = {
   eyebrow: 'Testimonials',
   title: 'What people say, once they say it.',
   empty: 'Leave your thoughts. Tell us how Luvreno is working for you.',
-  /** Shown only while there is no approved feedback; replaced automatically by the first real one. */
-  sampleTag: 'Example',
+  /** Template placeholders for the site owner: shown only until the first real testimonial is added to content/testimonials.seed.json. */
   samples: [
-    { id: 'sample-1', name: 'Retail manager', company: 'Online home goods store', rating: 5, date: '', message: 'Having customer profiles, the catalog and our recommendation rules in one place means we stopped juggling a spreadsheet for every campaign.' },
-    { id: 'sample-2', name: 'E-commerce owner', company: 'Independent fashion boutique', rating: 5, date: '', message: 'Related and complementary product rules were easy to set up, and I can always see why a product was suggested to a customer.' },
-    { id: 'sample-3', name: 'Marketing lead', company: 'Multi-store retailer', rating: 4, date: '', message: 'Segments made it simple to plan around customer groups. We would like more report templates, but the basics are clear.' },
+    { id: 'sample-1', name: 'Customer name', company: 'Job title, Company', rating: 5, date: '', message: 'Having customer profiles, the catalog and our recommendation rules in one place means we stopped juggling a spreadsheet for every campaign.' },
+    { id: 'sample-2', name: 'Customer name', company: 'Job title, Company', rating: 5, date: '', message: 'Related and complementary product rules were easy to set up, and I can always see why a product was suggested to a customer.' },
+    { id: 'sample-3', name: 'Customer name', company: 'Job title, Company', rating: 4, date: '', message: 'Segments made it simple to plan around customer groups. We would like more report templates, but the basics are clear.' },
   ],
   formTitle: 'Share your feedback',
   consent: 'I agree this may be published',

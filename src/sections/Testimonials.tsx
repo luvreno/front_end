@@ -106,7 +106,6 @@ function Carousel({ items, sample = false }: { items: Testimonial[]; sample?: bo
         {items.map((t) => (
           <li key={t.id} className="t-card">
             <span className="t-hole" aria-hidden="true" />
-            {sample && <span className="t-sample-tag mono">{T.sampleTag}</span>}
             <Stars n={t.rating} />
             <blockquote className="t-quote"><p>{t.message}</p></blockquote>
             <p className="t-who">
