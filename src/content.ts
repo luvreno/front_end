@@ -221,6 +221,56 @@ export const productNames: Record<ProductArt, string> = {
   watch: 'Field watch',
 };
 
+/* -------------------------------------------------------------- live demo */
+
+export type DemoRule = 'customer' | 'segment' | 'related' | 'complementary';
+
+export const liveDemo = {
+  eyebrow: 'Live demo',
+  title: 'Watch L.VIA fill a shopper’s shelf.',
+  text: 'Pick a sample shopper, then switch recommendation rules on and off. The storefront updates as you go, and every product says why it is there.',
+  banner: 'Illustrative: sample shoppers, products and rules, no real customer data.',
+  workspaceLabel: 'L.VIA workspace',
+  storeUrl: 'yourstore.example/home',
+  rules: [
+    { id: 'customer', label: 'Customer-specific', tag: 'For you' },
+    { id: 'segment', label: 'Segment-based', tag: 'In your segment' },
+    { id: 'related', label: 'Related product', tag: 'Similar to' },
+    { id: 'complementary', label: 'Complementary product', tag: 'Goes with' },
+  ] as { id: DemoRule; label: string; tag: string }[],
+  shoppers: [
+    {
+      id: 'maya', name: 'Maya', segment: 'Home and living', lastPurchase: 'Stoneware mug', preferences: ['Plants', 'Home decor'],
+      picks: {
+        customer: { item: 'plant', why: 'Matches a saved preference: plants.' },
+        segment: { item: 'lamp', why: 'Linked to the Home and living segment.' },
+        related: { item: 'notebook', why: 'Shares the natural materials attribute with her Stoneware mug.' },
+        complementary: { item: 'tote', why: 'A gift set rule pairs mugs with a cotton tote.' },
+      },
+    },
+    {
+      id: 'ravi', name: 'Ravi', segment: 'Frequent buyers', lastPurchase: 'Canvas sneaker', preferences: ['Stationery', 'Outdoors'],
+      picks: {
+        customer: { item: 'notebook', why: 'Matches a saved preference: stationery.' },
+        segment: { item: 'mug', why: 'Linked to the Frequent buyers segment.' },
+        related: { item: 'tote', why: 'Same brand as his Canvas sneaker.' },
+        complementary: { item: 'watch', why: 'An outdoor set rule pairs sneakers with a field watch.' },
+      },
+    },
+    {
+      id: 'leah', name: 'Leah', segment: 'First purchase', lastPurchase: 'Linen notebook', preferences: ['Coffee', 'Desk setup'],
+      picks: {
+        customer: { item: 'mug', why: 'Matches a saved preference: coffee.' },
+        segment: { item: 'plant', why: 'Linked to the First purchase segment.' },
+        related: { item: 'lamp', why: 'Shares the desk category with her Linen notebook.' },
+        complementary: { item: 'tote', why: 'A rule pairs notebooks with a tote to carry them.' },
+      },
+    },
+  ] as { id: string; name: string; segment: string; lastPurchase: string; preferences: string[]; picks: Record<DemoRule, { item: ProductArt; why: string }> }[],
+  emptyTitle: 'No rules are switched on.',
+  emptyText: 'Turn on at least one rule type to fill the shelf.',
+};
+
 /* ------------------------------------------------------------- built for */
 
 export const builtFor = {

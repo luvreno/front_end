@@ -7,6 +7,7 @@ import { JournalTeaser, About, FaqSection, ClosingBanner } from '../sections/Clo
 import { ContactSection } from '../sections/ContactForm';
 import { PricingSection } from '../sections/Pricing';
 import { TestimonialsSection } from '../sections/Testimonials';
+import { LiveDemo } from '../sections/LiveDemo';
 
 const Divider = () => <hr className="stitch-divider thread-mobile" aria-hidden="true" />;
 
@@ -17,6 +18,7 @@ export default function Home() {
       <Hero />
       <ProblemSection />
       <HowItWorks />
+      <LiveDemo />
       <FeaturesSection />
       <RuleShelf />
       <BuiltFor />

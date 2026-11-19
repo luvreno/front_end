@@ -312,15 +312,35 @@ test('rule shelf updates from segment and rule choices', async ({ page }) => {
   const why = page.getByTestId('shelf-why');
   await expect(page.getByTestId('shelf-banner')).toHaveText('Illustrative, sample products and rules, no real customer data.');
   const before = await why.textContent();
-  await page.getByLabel('Home and living interest').check();
-  await page.getByLabel('Complementary product').check();
+  const shelf = page.locator('#rule-shelf');
+  await shelf.getByLabel('Home and living interest').check();
+  await shelf.getByLabel('Complementary product').check();
   await expect(why).toContainText('pairs a lamp with plants and mugs');
   expect(await why.textContent()).not.toBe(before);
   await expect(page.getByTestId('rule-shelf-output').locator('.shelf-product-name', { hasText: 'Plant pot' }).first()).toBeVisible();
   // keyboard: arrow keys move within a radio group
-  await page.getByLabel('Complementary product').focus();
+  await shelf.getByLabel('Complementary product').focus();
   await page.keyboard.press('ArrowLeft');
-  await expect(page.getByLabel('Related product')).toBeChecked();
+  await expect(shelf.getByLabel('Related product')).toBeChecked();
+});
+
+test('live demo: shopper and rule switches update the storefront', async ({ page }) => {
+  await prepare(page);
+  await page.goto('/');
+  const demo = page.locator('#demo');
+  const out = page.getByTestId('demo-output');
+  await expect(page.getByTestId('demo-banner')).toContainText('sample shoppers, products and rules, no real customer data');
+  await expect(out.locator('.demo-product')).toHaveCount(4);
+  await expect(out).toContainText('Recommended for Maya');
+  await demo.getByRole('radio', { name: /Ravi/ }).check();
+  await expect(out).toContainText('Recommended for Ravi');
+  await expect(page.getByTestId('demo-profile')).toContainText('Canvas sneaker');
+  await demo.getByRole('checkbox', { name: 'Segment-based' }).uncheck();
+  await expect(out.locator('.demo-product')).toHaveCount(3);
+  await expect(out.locator('.demo-product-name')).not.toContainText(['Stoneware mug']);
+  for (const name of ['Customer-specific', 'Related product', 'Complementary product']) await demo.getByRole('checkbox', { name }).uncheck();
+  await expect(page.getByTestId('demo-empty')).toBeVisible();
+  await expect(demo.getByRole('link', { name: /L\.VIA/ })).toHaveAttribute('href', '/product');
 });
 
 test('testimonials: empty state, validation and pending submission', async ({ page }) => {

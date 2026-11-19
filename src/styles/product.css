@@ -1,5 +1,6 @@
 /* ================================================================ header + mockup */
 .product-header .container { display: grid; gap: var(--space-5); }
+.product-header .container > * { min-width: 0; }
 .product-head-copy { max-width: 820px; }
 .product-head-copy h1 { margin-bottom: 0.3em; }
 .product-mock-wrap { position: relative; }
