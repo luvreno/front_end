@@ -580,6 +580,14 @@ export const testimonialsCopy = {
   eyebrow: 'Feedback',
   title: 'What people say, once they say it.',
   empty: 'No public feedback yet. Be the first to share your experience.',
+  /** Shown only while there is no approved feedback; replaced automatically by the first real one. */
+  sampleNote: 'Examples of how feedback will appear here. These are not reviews from real customers.',
+  sampleTag: 'Example',
+  samples: [
+    { id: 'sample-1', name: 'Retail manager', company: 'Online home goods store', rating: 5, date: '', message: 'Having customer profiles, the catalog and our recommendation rules in one place means we stopped juggling a spreadsheet for every campaign.' },
+    { id: 'sample-2', name: 'E-commerce owner', company: 'Independent fashion boutique', rating: 5, date: '', message: 'Related and complementary product rules were easy to set up, and I can always see why a product was suggested to a customer.' },
+    { id: 'sample-3', name: 'Marketing lead', company: 'Multi-store retailer', rating: 4, date: '', message: 'Segments made it simple to plan around customer groups. We would like more report templates, but the basics are clear.' },
+  ],
   formTitle: 'Share your feedback',
   consent: 'I agree this may be published',
   pendingNote: 'Thank you. Your feedback was received and will appear once it has been reviewed.',

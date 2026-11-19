@@ -65,7 +65,7 @@ function Stars({ n, label }: { n: number; label?: string }) {
   );
 }
 
-function Carousel({ items }: { items: Testimonial[] }) {
+function Carousel({ items, sample = false }: { items: Testimonial[]; sample?: boolean }) {
   const track = useRef<HTMLUListElement>(null);
   const drag = useRef<{ x: number; left: number; moved: boolean } | null>(null);
   const scrollBy = (dir: number) => {
@@ -94,7 +94,7 @@ function Carousel({ items }: { items: Testimonial[] }) {
         ref={track}
         className="t-track"
         tabIndex={0}
-        aria-label="Approved feedback, scroll horizontally or use the arrow keys"
+        aria-label={`${sample ? 'Example feedback' : 'Approved feedback'}, scroll horizontally or use the arrow keys`}
         onPointerDown={down}
         onPointerMove={move}
         onPointerUp={up}
@@ -108,6 +108,7 @@ function Carousel({ items }: { items: Testimonial[] }) {
         {items.map((t) => (
           <li key={t.id} className="t-card">
             <span className="t-hole" aria-hidden="true" />
+            {sample && <span className="t-sample-tag mono">{T.sampleTag}</span>}
             <Stars n={t.rating} />
             <blockquote className="t-quote"><p>{t.message}</p></blockquote>
             <p className="t-who">
@@ -279,9 +280,10 @@ export function TestimonialsSection() {
                 <Carousel items={items} />
               </>
             ) : (
-              <div className="t-empty" data-testid="testimonials-empty">
-                <span className="hang-tag hang-tag-green">Feedback</span>
-                <p>{T.empty}</p>
+              <div className="t-samples" data-testid="testimonials-empty">
+                <p className="t-sample-note mono" data-testid="testimonials-sample-note">{T.sampleNote}</p>
+                <Carousel items={T.samples} sample />
+                <p className="t-empty-line">{T.empty}</p>
               </div>
             )}
           </div>
