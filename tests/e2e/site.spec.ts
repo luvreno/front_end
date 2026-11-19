@@ -343,24 +343,14 @@ test('live demo: shopper and rule switches update the storefront', async ({ page
   await expect(demo.getByRole('link', { name: /L\.VIA/ })).toHaveAttribute('href', '/product');
 });
 
-test('testimonials: empty state, validation and pending submission', async ({ page }) => {
+test('testimonials: sample cards are tagged and there is no submission form', async ({ page }) => {
   await prepare(page);
   await page.goto('/');
-  await expect(page.getByTestId('testimonials-empty')).toContainText('Leave your thoughts. Tell us how Luvreno is working for you.');
+  const section = page.locator('#testimonials');
+  await expect(page.getByTestId('testimonials-empty').locator('.t-card')).toHaveCount(3);
   await expect(page.getByTestId('testimonials-empty').locator('.t-sample-tag')).toHaveCount(3);
-  const form = page.getByTestId('testimonial-form');
-  await form.getByRole('button', { name: 'Send feedback' }).click();
-  await expect(form.locator('[aria-invalid="true"]').first()).toBeVisible();
-  await expect(form).toContainText('Please enter your name.');
-  await expect(form).toContainText('Please choose a rating from 1 to 5.');
-  await expect(form).toContainText('Please confirm that this may be published.');
-  await form.getByLabel('Name').fill('Sam');
-  await form.locator('label.rating-opt').nth(3).click();
-  await form.getByLabel('Your feedback').fill('Readable rules and clear reports for our team.');
-  await form.getByLabel('I agree this may be published').check();
-  await form.getByTestId('captcha-stub').click();
-  await form.getByRole('button', { name: 'Send feedback' }).click();
-  await expect(page.getByTestId('testimonial-success')).toBeVisible();
+  await expect(section.locator('form')).toHaveCount(0);
+  await expect(page.getByTestId('rating-summary')).toHaveCount(0);
 });
 
 test('approved testimonials show a carousel and summary from approved items only', async ({ page }) => {

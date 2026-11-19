@@ -577,7 +577,7 @@ export const productPage = {
 /* ----------------------------------------------------------- testimonials */
 
 export const testimonialsCopy = {
-  eyebrow: 'Feedback',
+  eyebrow: 'Testimonials',
   title: 'What people say, once they say it.',
   empty: 'Leave your thoughts. Tell us how Luvreno is working for you.',
   /** Shown only while there is no approved feedback; replaced automatically by the first real one. */

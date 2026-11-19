@@ -1,9 +1,7 @@
-import { useCallback, useEffect, useRef, useState, type FormEvent, type PointerEvent } from 'react';
+import { useEffect, useRef, useState, type PointerEvent } from 'react';
 import seed from '../content/testimonials.seed.json';
 import { testimonialsCopy as T } from '../content';
-import { parseTestimonials, ratingSummary, validateTestimonial, type Errors, type Testimonial, type TestimonialInput } from '../lib/validation';
-import { postJSON } from '../lib/api';
-import { useRecaptcha, recaptchaConfigured } from '../lib/recaptcha';
+import { parseTestimonials, ratingSummary, type Testimonial } from '../lib/validation';
 import { Icon } from '../components/Icons';
 
 const seedItems = parseTestimonials(seed);
@@ -128,137 +126,6 @@ function Carousel({ items, sample = false }: { items: Testimonial[]; sample?: bo
   );
 }
 
-type FormState = Omit<TestimonialInput, 'rating'> & { rating: number };
-const empty: FormState = { name: '', company: '', role: '', rating: 0, message: '', consent: false };
-
-function FeedbackForm() {
-  const [v, setV] = useState<FormState>(empty);
-  const [hp, setHp] = useState('');
-  const [errors, setErrors] = useState<Errors<TestimonialInput>>({});
-  const [submitted, setSubmitted] = useState(false);
-  const [status, setStatus] = useState<'idle' | 'sending' | 'ok' | 'error'>('idle');
-  const [serverMsg, setServerMsg] = useState('');
-  const [capErr, setCapErr] = useState('');
-  const formRef = useRef<HTMLFormElement>(null);
-  const boxRef = useRef<HTMLDivElement>(null);
-  const { token, status: capStatus, reset } = useRecaptcha(boxRef, formRef);
-  const L = T.limits;
-
-  const update = useCallback(<K extends keyof FormState>(k: K, val: FormState[K]) => {
-    setV((cur) => {
-      const next = { ...cur, [k]: val };
-      if (submitted) setErrors(validateTestimonial(next));
-      return next;
-    });
-  }, [submitted]);
-
-  const submit = async (e: FormEvent) => {
-    e.preventDefault();
-    if (status === 'sending') return;
-    setSubmitted(true);
-    const errs = validateTestimonial(v);
-    setErrors(errs);
-    if (Object.keys(errs).length) {
-      const first = Object.keys(errs)[0];
-      formRef.current?.querySelector<HTMLElement>(`[name="t-${first}"]`)?.focus();
-      return;
-    }
-    if (recaptchaConfigured && !token) {
-      setCapErr('Please tick the reCAPTCHA checkbox.');
-      return;
-    }
-    setCapErr('');
-    setStatus('sending');
-    const r = await postJSON<{ ok: boolean; error?: string }>('/api/testimonials.php', { ...v, recaptcha: token, website: hp });
-    if (r.ok) {
-      setStatus('ok');
-      setV(empty);
-      setSubmitted(false);
-    } else {
-      setStatus('error');
-      setServerMsg(r.status === 422 || r.status === 429 ? r.error || '' : '');
-    }
-    reset();
-  };
-
-  const err = (k: keyof TestimonialInput) => (submitted ? errors[k] : undefined);
-  const aria = (k: keyof TestimonialInput) => ({
-    name: `t-${k}`,
-    'aria-invalid': err(k) ? (true as const) : undefined,
-    'aria-describedby': err(k) ? `t-${k}-err` : undefined,
-  });
-  const E = (k: keyof TestimonialInput) => (err(k) ? <p id={`t-${k}-err`} className="field-error">{err(k)}</p> : null);
-  const disabled = status === 'sending' || (!recaptchaConfigured && import.meta.env.PROD);
-
-  return (
-    <form ref={formRef} className="t-form card" onSubmit={submit} noValidate data-testid="testimonial-form" aria-labelledby="t-form-title">
-      <h3 id="t-form-title" className="t-form-title">{T.formTitle}</h3>
-      <div className="field">
-        <input id="t-name" {...aria('name')} type="text" autoComplete="name" placeholder=" " maxLength={L.name} value={v.name} onChange={(e) => update('name', e.target.value)} />
-        <label htmlFor="t-name" className="float">Name</label>
-        {E('name')}
-      </div>
-      <div className="t-row">
-        <div className="field">
-          <input id="t-company" {...aria('company')} type="text" autoComplete="organization" placeholder=" " maxLength={L.company} value={v.company} onChange={(e) => update('company', e.target.value)} />
-          <label htmlFor="t-company" className="float">Company (optional)</label>
-          {E('company')}
-        </div>
-        <div className="field">
-          <input id="t-role" {...aria('role')} type="text" autoComplete="organization-title" placeholder=" " maxLength={L.role} value={v.role} onChange={(e) => update('role', e.target.value)} />
-          <label htmlFor="t-role" className="float">Role (optional)</label>
-          {E('role')}
-        </div>
-      </div>
-      <fieldset className="rating-field" aria-describedby={err('rating') ? 't-rating-err' : undefined} aria-invalid={err('rating') ? true : undefined}>
-        <legend>Rating</legend>
-        <div className="rating-options">
-          {[1, 2, 3, 4, 5].map((n) => (
-            <label key={n} className="rating-opt">
-              <input type="radio" name="t-rating" value={n} checked={v.rating === n} onChange={() => update('rating', n)} />
-              <span className="rating-chip"><Icon name="star" size={18} /> {n}<span className="sr-only"> out of 5</span></span>
-            </label>
-          ))}
-        </div>
-        {E('rating')}
-      </fieldset>
-      <div className="field">
-        <textarea id="t-message" {...aria('message')} placeholder=" " rows={5} maxLength={L.message} value={v.message} onChange={(e) => update('message', e.target.value)} />
-        <label htmlFor="t-message" className="float">Your feedback</label>
-        <p className="field-hint">{v.message.length} / {L.message} characters. Links and email addresses are not published.</p>
-        {E('message')}
-      </div>
-      <label className="check">
-        <input type="checkbox" {...aria('consent')} checked={v.consent} onChange={(e) => update('consent', e.target.checked)} />
-        <span>{T.consent}</span>
-      </label>
-      {E('consent')}
-      <div className="honeypot" aria-hidden="true">
-        <label htmlFor="t-website">Website</label>
-        <input id="t-website" type="text" name="website" tabIndex={-1} autoComplete="off" value={hp} onChange={(e) => setHp(e.target.value)} />
-      </div>
-      {recaptchaConfigured ? (
-        <div className="captcha">
-          <div className="captcha-box">
-            <div ref={boxRef} className="captcha-mount" />
-            {capStatus !== 'ready' && <span className="field-hint">{capStatus === 'error' ? 'reCAPTCHA could not load. Please reload the page.' : 'Loading reCAPTCHA'}</span>}
-          </div>
-          {capErr && <p className="field-error" role="alert">{capErr}</p>}
-        </div>
-      ) : (
-        <p className="form-status info">Feedback form not configured</p>
-      )}
-      <button type="submit" className="btn btn-primary btn-lg" disabled={disabled} aria-disabled={disabled}>
-        {status === 'sending' ? (<><span className="spinner" aria-hidden="true" /> Sending</>) : 'Send feedback'}
-      </button>
-      <div aria-live="polite">
-        {status === 'ok' && <p className="form-status ok" data-testid="testimonial-success">{T.pendingNote}</p>}
-        {status === 'error' && <p className="form-status err" role="alert">{serverMsg || T.error}</p>}
-      </div>
-    </form>
-  );
-}
-
 export function TestimonialsSection() {
   const items = useTestimonials();
   const sum = ratingSummary(items);
@@ -269,24 +136,20 @@ export function TestimonialsSection() {
           <p className="eyebrow">{T.eyebrow}</p>
           <h2 id="testimonials-title">{T.title}</h2>
         </div>
-        <div className="t-grid">
-          <div className="t-list" aria-live="polite">
-            {items.length ? (
-              <>
-                <p className="t-summary" data-testid="rating-summary">
-                  <Stars n={sum.average} label={`Average rating ${sum.average} out of 5`} />
-                  <span><strong>{sum.average.toFixed(1)}</strong> average from {sum.count} approved {sum.count === 1 ? 'review' : 'reviews'}</span>
-                </p>
-                <Carousel items={items} />
-              </>
-            ) : (
-              <div className="t-samples" data-testid="testimonials-empty">
-                <Carousel items={T.samples} sample />
-                <p className="t-empty-line">{T.empty}</p>
-              </div>
-            )}
-          </div>
-          <FeedbackForm />
+        <div className="t-list" aria-live="polite">
+          {items.length ? (
+            <>
+              <p className="t-summary" data-testid="rating-summary">
+                <Stars n={sum.average} label={`Average rating ${sum.average} out of 5`} />
+                <span><strong>{sum.average.toFixed(1)}</strong> average from {sum.count} approved {sum.count === 1 ? 'review' : 'reviews'}</span>
+              </p>
+              <Carousel items={items} />
+            </>
+          ) : (
+            <div className="t-samples" data-testid="testimonials-empty">
+              <Carousel items={T.samples} sample />
+            </div>
+          )}
         </div>
       </div>
     </section>
