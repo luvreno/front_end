@@ -281,7 +281,6 @@ export function TestimonialsSection() {
               </>
             ) : (
               <div className="t-samples" data-testid="testimonials-empty">
-                <p className="t-sample-note mono" data-testid="testimonials-sample-note">{T.sampleNote}</p>
                 <Carousel items={T.samples} sample />
                 <p className="t-empty-line">{T.empty}</p>
               </div>

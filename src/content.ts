@@ -579,9 +579,8 @@ export const productPage = {
 export const testimonialsCopy = {
   eyebrow: 'Feedback',
   title: 'What people say, once they say it.',
-  empty: 'No public feedback yet. Be the first to share your experience.',
+  empty: 'Leave your thoughts. Tell us how Luvreno is working for you.',
   /** Shown only while there is no approved feedback; replaced automatically by the first real one. */
-  sampleNote: 'Examples of how feedback will appear here. These are not reviews from real customers.',
   sampleTag: 'Example',
   samples: [
     { id: 'sample-1', name: 'Retail manager', company: 'Online home goods store', rating: 5, date: '', message: 'Having customer profiles, the catalog and our recommendation rules in one place means we stopped juggling a spreadsheet for every campaign.' },

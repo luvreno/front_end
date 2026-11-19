@@ -346,8 +346,7 @@ test('live demo: shopper and rule switches update the storefront', async ({ page
 test('testimonials: empty state, validation and pending submission', async ({ page }) => {
   await prepare(page);
   await page.goto('/');
-  await expect(page.getByTestId('testimonials-empty')).toContainText('No public feedback yet. Be the first to share your experience.');
-  await expect(page.getByTestId('testimonials-sample-note')).toContainText('not reviews from real customers');
+  await expect(page.getByTestId('testimonials-empty')).toContainText('Leave your thoughts. Tell us how Luvreno is working for you.');
   await expect(page.getByTestId('testimonials-empty').locator('.t-sample-tag')).toHaveCount(3);
   const form = page.getByTestId('testimonial-form');
   await form.getByRole('button', { name: 'Send feedback' }).click();
