@@ -72,7 +72,7 @@ export const socialLinks: ExtLink[] = [
 ];
 /** Business listings and citation sources. Real URLs only. */
 export const citationLinks: ExtLink[] = [
-  { label: 'Crunchbase', url: 'https://www.crunchbase.com/organization/luvreno' },
+  { label: 'Crunchbase', url: 'https://www.crunchbase.com/organization/luvreno-d5b0' },
   { label: 'F6S', url: 'https://www.f6s.com/luvreno' },
 ];
 export const realLinks = (list: ExtLink[]) =>
